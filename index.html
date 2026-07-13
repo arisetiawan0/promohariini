@@ -9,28 +9,36 @@
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Poppins:ital,wght@0,500;0,600;0,700;0,800;1,700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --blue-1: #6FA8FF;
-    --blue-2: #3D7BF0;
-    --blue-deep: #1D4FB8;
-    --pink-1: #FF5E7E;
-    --pink-2: #EF426B;
-    --pink-soft: rgba(255, 255, 255, .22);
-    --yellow: #FFD93B;
-    --yellow-deep: #F0B90B;
-    --maroon: #6E3B50;
-    --maroon-text: #FFE9F0;
+    --blue-1: #5d96f4;
+    --blue-2: #367ce9;
+    --blue-deep: #304a91;
+    --pink-1: #ff4d7c;
+    --pink-2: #ff386f;
+    --hot-pink: #f50098;
+    --yellow: #ffe159;
+    --red: #ef312d;
     --ink: #2B2B33;
     --white: #ffffff;
+    --stage-w: 1920px;
+    --stage-h: 1080px;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { height: 100%; }
+  html, body { width: 100%; height: 100%; }
   body {
     background: linear-gradient(160deg, var(--blue-1), var(--blue-2));
     color: var(--white);
     font-family: "Poppins", "Segoe UI", sans-serif;
     overflow: hidden;
   }
-  .screen { display: none; height: 100vh; }
+  .screen {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--stage-w);
+    height: var(--stage-h);
+    transform-origin: top left;
+  }
   .screen.active { display: flex; }
 
   .display { font-family: "Baloo 2", "Poppins", sans-serif; }
@@ -48,22 +56,22 @@
   .logo-title .t1 {
     font-family: "Baloo 2", sans-serif;
     font-weight: 800;
-    font-size: clamp(30px, 5.2vw, 84px);
+    font-size: clamp(42px, 6vw, 100px);
     color: var(--white);
-    letter-spacing: .02em;
-    text-shadow: 0 4px 0 rgba(29, 79, 184, .45);
+    letter-spacing: .03em;
+    text-shadow: none;
   }
   .logo-title .t2 {
     font-family: "Baloo 2", sans-serif;
     font-weight: 800;
-    font-size: clamp(30px, 5.2vw, 84px);
+    font-size: clamp(42px, 5.65vw, 96px);
     color: var(--yellow);
-    background: linear-gradient(180deg, #FF4D4D, #E8332A);
-    padding: .02em .28em .08em;
+    background: var(--red);
+    padding: .02em .34em .06em;
     border-radius: .22em;
-    box-shadow: 0 5px 0 rgba(150, 20, 20, .45);
+    box-shadow: 0 7px 0 rgba(24, 55, 122, .34);
     display: inline-block;
-    transform: rotate(-2deg);
+    transform: rotate(-1.8deg);
   }
   .setup-card {
     background: var(--white);
@@ -107,23 +115,29 @@
   #setupStatus { color: #EAF1FF; font-weight: 600; font-size: clamp(12px, 1.2vw, 17px); min-height: 1.4em; }
 
   /* ---------- Layar signage ---------- */
-  #board { flex-direction: column; padding: 1.6vh 2vw 1.2vh; gap: 1.2vh; }
+  #board {
+    flex-direction: column;
+    padding: 44px 58px 38px;
+    gap: 64px;
+  }
 
   header {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    gap: 1vw;
+    gap: 19px;
     flex: 0 0 auto;
   }
+  #board .logo-title .t1 { font-size: 100px; }
+  #board .logo-title .t2 { font-size: 96px; }
   .head-pill {
     background: rgba(255, 255, 255, .92);
     color: var(--blue-deep);
     font-weight: 700;
-    font-size: clamp(11px, 1.15vw, 20px);
-    padding: .5em 1.2em;
+    font-size: 17px;
+    padding: .58em 1.35em;
     border-radius: 999px;
-    box-shadow: 0 3px 0 rgba(29, 79, 184, .3);
+    box-shadow: 0 3px 0 rgba(31, 69, 145, .25), 0 0 0 2px rgba(31, 69, 145, .08) inset;
     white-space: nowrap;
     justify-self: start;
   }
@@ -133,10 +147,10 @@
   .panel {
     flex: 1 1 auto;
     position: relative;
-    background: linear-gradient(150deg, var(--pink-1), var(--pink-2));
-    border: 4px solid var(--yellow);
-    border-radius: 30px;
-    box-shadow: 0 0 0 6px rgba(255, 217, 59, .35), 0 12px 30px rgba(29, 79, 184, .35);
+    background: var(--pink-2);
+    border: 5px solid var(--yellow);
+    border-radius: 32px;
+    box-shadow: 0 0 0 4px rgba(64, 206, 214, .52), 0 10px 20px rgba(31, 69, 145, .18);
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -148,102 +162,123 @@
     inset: 0;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.6vw;
-    padding: 2.6vh 2.2vw 2.4vh;
+    gap: 25px;
+    padding: 48px 62px 54px;
     opacity: 0;
     transform: scale(.985);
     transition: opacity .7s ease, transform .7s ease;
     pointer-events: none;
   }
   .slide.visible { opacity: 1; transform: scale(1); }
-  .slide.count-1 { grid-template-columns: minmax(0, 1fr); padding-left: 25vw; padding-right: 25vw; }
-  .slide.count-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); padding-left: 13vw; padding-right: 13vw; }
+  .slide.count-1 { grid-template-columns: minmax(0, 1fr); padding-left: 480px; padding-right: 480px; }
+  .slide.count-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); padding-left: 250px; padding-right: 250px; }
 
   .card {
-    background: var(--pink-soft);
-    border: 2px solid rgba(255, 255, 255, .45);
-    border-radius: 22px;
+    background: var(--white);
+    border: 0;
+    border-radius: 86px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     text-align: center;
-    gap: 1.5vh;
-    padding: 2.2vh 1.2vw;
+    gap: 0;
+    padding: 46px 38px 36px;
     min-width: 0;
+    min-height: 0;
+    overflow: hidden;
   }
-  .brandbox {
-    background: var(--white);
-    border-radius: 18px;
+  .brand-name {
+    font-family: "Baloo 2", sans-serif;
+    font-weight: 800;
+    font-size: 58px;
+    color: var(--blue-deep);
+    letter-spacing: 0;
+    line-height: .88;
+    overflow-wrap: anywhere;
+    text-transform: uppercase;
+  }
+  .discount-label {
+    color: var(--blue-deep);
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 1;
+    margin-top: 12px;
+    text-transform: uppercase;
+  }
+
+  .value {
+    font-family: "Poppins", "Segoe UI", sans-serif;
+    font-weight: 800;
+    line-height: .78;
+  }
+  .value.percent {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    margin-top: 24px;
+    margin-bottom: 40px;
+    min-height: 278px;
     width: 100%;
-    padding: 3vh .6vw;
+    color: #000;
+    letter-spacing: -0.05em;
+  }
+  .percent-number {
+    font-size: 266px;
+    line-height: .78;
+  }
+  .percent-dot {
+    width: 120px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--hot-pink);
+    color: var(--white);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 70px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0;
+    margin-left: -34px;
+    margin-bottom: 8px;
+  }
+  .value.text {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 6px 0 rgba(150, 30, 60, .25);
-  }
-  .brandbox span {
-    font-family: "Baloo 2", sans-serif;
-    font-weight: 800;
-    font-size: clamp(20px, 2.4vw, 44px);
-    color: var(--ink);
-    letter-spacing: .03em;
+    min-height: 278px;
+    margin: 24px 0 40px;
+    font-size: 42px;
+    color: #000;
+    letter-spacing: 0;
     overflow-wrap: anywhere;
-  }
-  .badge {
-    font-weight: 800;
-    font-size: clamp(10px, 1vw, 18px);
-    letter-spacing: .12em;
-    padding: .45em 1.6em;
-    border-radius: 999px;
-    color: var(--white);
-  }
-  .badge.diskon  { background: #E8332A; box-shadow: 0 3px 0 rgba(120, 10, 10, .4); }
-  .badge.voucher { background: #7C4DFF; box-shadow: 0 3px 0 rgba(60, 20, 140, .4); }
-  .badge.gimmick { background: #FF8A00; box-shadow: 0 3px 0 rgba(150, 75, 0, .4); }
-  .badge.lainnya { background: var(--blue-deep); box-shadow: 0 3px 0 rgba(10, 35, 90, .4); }
-
-  .value {
-    font-family: "Baloo 2", sans-serif;
-    font-weight: 800;
-    line-height: 1.05;
-    overflow-wrap: anywhere;
-  }
-  .value.percent {
-    font-size: clamp(44px, 6.8vw, 140px);
-    color: var(--yellow);
-    text-shadow: 0 5px 0 rgba(150, 30, 60, .45);
-    letter-spacing: .01em;
-  }
-  .value.text {
-    font-size: clamp(16px, 1.9vw, 34px);
-    color: var(--white);
-    text-shadow: 0 3px 0 rgba(150, 30, 60, .35);
-    padding: 0 .3em;
   }
 
   .scope-pill {
-    background: var(--maroon);
-    color: var(--maroon-text);
+    background: var(--pink-1);
+    color: var(--white);
     font-weight: 800;
-    font-size: clamp(11px, 1.1vw, 20px);
-    letter-spacing: .12em;
-    padding: .55em 1.8em;
+    font-size: 30px;
+    letter-spacing: 0;
+    line-height: 1;
+    padding: .64em 1.9em .68em;
     border-radius: 999px;
+    width: min(100%, 340px);
+    white-space: nowrap;
   }
   .period {
-    color: #FFE2EA;
-    font-weight: 600;
-    font-size: clamp(10px, 1vw, 18px);
+    color: var(--pink-1);
+    font-weight: 800;
+    font-size: 23px;
+    line-height: 1.1;
+    margin-top: 20px;
+    white-space: nowrap;
   }
 
   footer {
-    flex: 0 0 auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: .7vw;
-    padding: .6vh 0 1vh;
+    display: none;
   }
   .dot {
     width: clamp(9px, .85vw, 15px);
@@ -321,7 +356,7 @@
     <div class="head-center">
       <div class="logo-title"><span class="t1">PROMO</span> <span class="t2">HARI INI</span></div>
     </div>
-    <div class="head-pill right"><span id="dateLine"></span> &middot; <span id="clockLine"></span> WITA</div>
+    <div class="head-pill right"><span id="dateLine"></span> - <span id="clockLine"></span> WITA</div>
   </header>
 
   <div class="panel">
@@ -346,6 +381,8 @@
   var REFRESH_HOURS = [8, 12, 18];      // jadwal tarik data, WITA
   var TZ = 'Asia/Makassar';             // WITA
   var STORAGE_KEY = 'phi_outlet_v1';
+  var STAGE_W = 1920;
+  var STAGE_H = 1080;
 
   var state = {
     raw: null,
@@ -356,6 +393,18 @@
     lastSlotKey: null,
     fetchFailed: false
   };
+
+  function fitStage() {
+    var viewportW = window.innerWidth || document.documentElement.clientWidth || STAGE_W;
+    var viewportH = window.innerHeight || document.documentElement.clientHeight || STAGE_H;
+    var scale = Math.min(viewportW / STAGE_W, viewportH / STAGE_H);
+    var left = Math.max(0, (viewportW - STAGE_W * scale) / 2);
+    var top = Math.max(0, (viewportH - STAGE_H * scale) / 2);
+    var transform = 'translate(' + left + 'px, ' + top + 'px) scale(' + scale + ')';
+    document.querySelectorAll('.screen').forEach(function (el) {
+      el.style.transform = transform;
+    });
+  }
 
   /* ---------- Util waktu (WITA) ---------- */
   function witaParts(date) {
@@ -379,7 +428,7 @@
   function fmtDateShort(date) {
     return new Intl.DateTimeFormat('id-ID', {
       timeZone: TZ, day: 'numeric', month: 'short', year: 'numeric'
-    }).format(date);
+    }).format(date).toUpperCase();
   }
 
   // Tanggal akhir yang jatuh tepat pukul 00:00 WITA dianggap batas eksklusif
@@ -449,32 +498,37 @@
     return 'SELECTED ITEM';
   }
 
-  function badgeClass(jenis) {
+  function promoLabel(jenis) {
     var j = String(jenis || '').toLowerCase();
-    if (j === 'diskon' || j === 'voucher' || j === 'gimmick') return j;
-    return 'lainnya';
+    if (j === 'diskon') return 'DISCOUNT';
+    return String(jenis || 'PROMO').toUpperCase();
   }
 
   function buildCard(promo) {
     var card = document.createElement('div');
     card.className = 'card';
 
-    var brandbox = document.createElement('div');
-    brandbox.className = 'brandbox';
-    var brand = document.createElement('span');
+    var brand = document.createElement('div');
+    brand.className = 'brand-name';
     brand.textContent = promo.brand || '';
-    brandbox.appendChild(brand);
 
-    var badge = document.createElement('div');
-    badge.className = 'badge ' + badgeClass(promo.jenis_promo);
-    badge.textContent = String(promo.jenis_promo || 'Promo').toUpperCase();
+    var label = document.createElement('div');
+    label.className = 'discount-label';
+    label.textContent = promoLabel(promo.jenis_promo);
 
     var value = document.createElement('div');
     var pct = String(promo.jenis_promo || '').toLowerCase() === 'diskon'
       ? extractPercent(promo.mekanisme) : null;
     if (pct) {
       value.className = 'value percent';
-      value.textContent = pct;
+      var number = document.createElement('span');
+      number.className = 'percent-number';
+      number.textContent = pct.replace('%', '');
+      var dot = document.createElement('span');
+      dot.className = 'percent-dot';
+      dot.textContent = '%';
+      value.appendChild(number);
+      value.appendChild(dot);
     } else {
       value.className = 'value text';
       value.textContent = promo.mekanisme || promo.nama_promo || '';
@@ -486,10 +540,10 @@
 
     var period = document.createElement('div');
     period.className = 'period';
-    period.textContent = '\uD83D\uDD52 ' + fmtPeriod(promo.periode_mulai, promo.periode_selesai);
+    period.textContent = '\u23F3 ' + fmtPeriod(promo.periode_mulai, promo.periode_selesai);
 
-    card.appendChild(brandbox);
-    card.appendChild(badge);
+    card.appendChild(brand);
+    card.appendChild(label);
     card.appendChild(value);
     card.appendChild(scope);
     card.appendChild(period);
@@ -644,8 +698,11 @@
 
   document.getElementById('startBtn').addEventListener('click', startBoard);
   document.getElementById('gearBtn').addEventListener('click', backToSetup);
+  window.addEventListener('resize', fitStage);
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', fitStage);
 
   /* ---------- Boot ---------- */
+  fitStage();
   tickClock();
   setInterval(tickClock, 1000);
   setInterval(scheduleTick, 30000);
