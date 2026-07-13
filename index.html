@@ -65,16 +65,6 @@
     display: inline-block;
     transform: rotate(-2deg);
   }
-  .tagline-pill {
-    display: inline-block;
-    background: var(--pink-2);
-    color: var(--white);
-    font-weight: 700;
-    font-size: clamp(13px, 1.4vw, 22px);
-    padding: .5em 1.6em;
-    border-radius: 999px;
-    box-shadow: 0 4px 0 rgba(150, 30, 60, .35);
-  }
   .setup-card {
     background: var(--white);
     color: var(--ink);
@@ -139,7 +129,6 @@
   }
   .head-pill.right { justify-self: end; }
   .head-center { text-align: center; }
-  .head-center .tagline-pill { margin-top: .5vh; }
 
   .panel {
     flex: 1 1 auto;
@@ -152,20 +141,6 @@
     display: flex;
     flex-direction: column;
   }
-  .panel-badge {
-    position: absolute;
-    top: 0; left: 50%;
-    transform: translate(-50%, -2px);
-    background: var(--yellow);
-    color: #7A4A00;
-    font-family: "Baloo 2", sans-serif;
-    font-weight: 800;
-    font-size: clamp(11px, 1.15vw, 20px);
-    letter-spacing: .08em;
-    padding: .35em 1.6em .45em;
-    border-radius: 0 0 16px 16px;
-    z-index: 3;
-  }
   .slides-area { position: relative; flex: 1 1 auto; }
 
   .slide {
@@ -174,7 +149,7 @@
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1.6vw;
-    padding: 4.6vh 2.2vw 2.4vh;
+    padding: 2.6vh 2.2vw 2.4vh;
     opacity: 0;
     transform: scale(.985);
     transition: opacity .7s ease, transform .7s ease;
@@ -332,7 +307,6 @@
 
 <section id="setup" class="screen active">
   <div class="logo-title"><span class="t1">PROMO</span> <span class="t2">HARI INI</span></div>
-  <div class="tagline-pill">Penawaran spesial untukmu hari ini!</div>
   <div class="setup-card">
     <label for="outletSelect">Pilih outlet untuk TV ini</label>
     <select id="outletSelect"></select>
@@ -346,13 +320,11 @@
     <div class="head-pill">&#128205; <span id="outletLine"></span></div>
     <div class="head-center">
       <div class="logo-title"><span class="t1">PROMO</span> <span class="t2">HARI INI</span></div>
-      <div class="tagline-pill">Penawaran spesial untukmu hari ini!</div>
     </div>
     <div class="head-pill right"><span id="dateLine"></span> &middot; <span id="clockLine"></span> WITA</div>
   </header>
 
   <div class="panel">
-    <div class="panel-badge">&#10024; PROMO SPESIAL &#10024;</div>
     <div class="slides-area" id="slidesHost">
       <div id="emptyState">
         <div class="big">Belum ada promo untuk hari ini</div>
