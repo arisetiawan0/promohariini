@@ -1,985 +1,1220 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Promo Hari Ini</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Poppins:ital,wght@0,500;0,600;0,700;0,800;1,700&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --blue-1: #5d96f4;
-    --blue-2: #367ce9;
-    --blue-deep: #304a91;
-    --pink-1: #ff4d7c;
-    --pink-2: #ff386f;
-    --hot-pink: #f50098;
-    --yellow: #ffe159;
-    --red: #ef312d;
-    --ink: #2B2B33;
-    --white: #ffffff;
-    --stage-w: 1920px;
-    --stage-h: 1080px;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { width: 100%; height: 100%; }
-  body {
-    background: linear-gradient(160deg, var(--blue-1), var(--blue-2));
-    color: var(--white);
-    font-family: "Poppins", "Segoe UI", sans-serif;
-    overflow: hidden;
-  }
-  .screen {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: var(--stage-w);
-    height: var(--stage-h);
-    transform-origin: top left;
-  }
-  .screen.active { display: flex; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promo Hari Ini</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Poppins:ital,wght@0,500;0,600;0,700;0,800;1,700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --blue-1: #5d96f4;
+      --blue-2: #367ce9;
+      --blue-deep: #304a91;
+      --pink-1: #ff4d7c;
+      --pink-2: #ff386f;
+      --hot-pink: #f50098;
+      --yellow: #ffe159;
+      --red: #ef312d;
+      --ink: #2B2B33;
+      --white: #ffffff;
+      --stage-w: 1920px;
+      --stage-h: 1080px;
+    }
 
-  .display { font-family: "Baloo 2", "Poppins", sans-serif; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  /* ---------- Layar pilih outlet ---------- */
-  #setup {
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 3vh;
-    text-align: center;
-    padding: 24px;
-  }
-  .logo-title { line-height: 1; }
-  .logo-title .t1 {
-    font-family: "Baloo 2", sans-serif;
-    font-weight: 800;
-    font-size: clamp(42px, 6vw, 100px);
-    color: var(--white);
-    letter-spacing: .03em;
-    text-shadow: none;
-  }
-  .logo-title .t2 {
-    font-family: "Baloo 2", sans-serif;
-    font-weight: 800;
-    font-size: clamp(42px, 5.65vw, 96px);
-    color: var(--yellow);
-    background: var(--red);
-    padding: .02em .34em .06em;
-    border-radius: .22em;
-    box-shadow: 0 7px 0 rgba(24, 55, 122, .34);
-    display: inline-block;
-    transform: rotate(-1.8deg);
-  }
-  .setup-card {
-    background: var(--white);
-    color: var(--ink);
-    border-radius: 26px;
-    padding: 4vh 4vw;
-    display: flex;
-    flex-direction: column;
-    gap: 2.4vh;
-    align-items: center;
-    box-shadow: 0 10px 0 rgba(29, 79, 184, .35);
-    min-width: min(560px, 88vw);
-  }
-  .setup-card label { font-weight: 700; font-size: clamp(15px, 1.5vw, 22px); }
-  .select-wrap { position: relative; width: 100%; }
-  .select-btn {
-    font-family: "Poppins", sans-serif;
-    font-weight: 600;
-    font-size: clamp(15px, 1.6vw, 22px);
-    padding: 14px 20px;
-    width: 100%;
-    background: #F2F6FF;
-    color: var(--ink);
-    border: 3px solid var(--blue-2);
-    border-radius: 14px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    text-align: left;
-  }
-  .select-btn svg {
-    width: 24px;
-    height: 24px;
-    color: var(--blue-2);
-    flex: 0 0 auto;
-    transition: transform .25s ease;
-  }
-  .select-wrap.open .select-btn svg { transform: rotate(180deg); }
-  .select-pop {
-    position: absolute;
-    top: calc(100% + 10px);
-    left: 0;
-    right: 0;
-    background: var(--white);
-    border-radius: 16px;
-    box-shadow: 0 18px 44px rgba(23, 48, 110, .35), 0 0 0 2px rgba(31, 69, 145, .08);
-    padding: 8px;
-    max-height: 340px;
-    overflow-y: auto;
-    z-index: 20;
-    text-align: left;
-  }
-  .select-pop[hidden] { display: none; }
-  .select-opt {
-    display: block;
-    width: 100%;
-    font-family: "Poppins", sans-serif;
-    font-weight: 600;
-    font-size: clamp(14px, 1.4vw, 20px);
-    color: var(--ink);
-    background: transparent;
-    border: none;
-    border-radius: 10px;
-    padding: 12px 16px;
-    cursor: pointer;
-    text-align: left;
-  }
-  .select-opt:hover { background: #F2F6FF; }
-  .select-opt[aria-selected="true"] {
-    background: #FFEBF1;
-    color: var(--pink-2);
-  }
-  #startBtn {
-    font-family: "Baloo 2", sans-serif;
-    font-weight: 800;
-    font-size: clamp(17px, 1.8vw, 26px);
-    padding: .55em 2.4em;
-    background: linear-gradient(180deg, var(--pink-1), var(--pink-2));
-    color: var(--white);
-    border: none;
-    border-radius: 999px;
-    cursor: pointer;
-    box-shadow: 0 6px 0 rgba(150, 30, 60, .4);
-    letter-spacing: .02em;
-  }
-  #startBtn:active { transform: translateY(3px); box-shadow: 0 3px 0 rgba(150, 30, 60, .4); }
-  #startBtn:disabled { opacity: .45; cursor: default; }
-  #setupStatus { color: #EAF1FF; font-weight: 600; font-size: clamp(12px, 1.2vw, 17px); min-height: 1.4em; }
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+    }
 
-  /* ---------- Layar signage ---------- */
-  #board {
-    flex-direction: column;
-    padding: 44px 58px 38px;
-    gap: 64px;
-  }
+    body {
+      background: linear-gradient(160deg, var(--blue-1), var(--blue-2));
+      color: var(--white);
+      font-family: "Poppins", "Segoe UI", sans-serif;
+      overflow: hidden;
+    }
 
-  header {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-    gap: 19px;
-    flex: 0 0 auto;
-  }
-  #board .logo-title .t1 { font-size: 100px; }
-  #board .logo-title .t2 { font-size: 96px; }
-  .head-pill {
-    background: rgba(255, 255, 255, .92);
-    color: var(--blue-deep);
-    font-weight: 700;
-    font-size: 17px;
-    padding: .58em 1.35em;
-    border-radius: 999px;
-    box-shadow: 0 3px 0 rgba(31, 69, 145, .25), 0 0 0 2px rgba(31, 69, 145, .08) inset;
-    white-space: nowrap;
-    justify-self: start;
-    display: inline-flex;
-    align-items: center;
-    gap: 9px;
-  }
-  .head-pill svg {
-    width: 21px;
-    height: 21px;
-    color: var(--pink-2);
-    flex: 0 0 auto;
-  }
-  .head-pill.right { justify-self: end; }
-  .head-center { text-align: center; }
+    .screen {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: var(--stage-w);
+      height: var(--stage-h);
+      transform-origin: top left;
+    }
 
-  .panel {
-    flex: 1 1 auto;
-    position: relative;
-    background: var(--pink-2);
-    border: 5px solid var(--yellow);
-    border-radius: 32px;
-    box-shadow: 0 0 0 4px rgba(64, 206, 214, .52), 0 10px 20px rgba(31, 69, 145, .18);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
-  .slides-area { position: relative; flex: 1 1 auto; }
+    .screen.active {
+      display: flex;
+    }
 
-  .slide {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 25px;
-    padding: 48px 62px 54px;
-    opacity: 0;
-    transform: scale(.985);
-    transition: opacity .7s ease, transform .7s ease;
-    pointer-events: none;
-  }
-  .slide.visible { opacity: 1; transform: scale(1); }
-  .slide.count-1 { grid-template-columns: minmax(0, 1fr); padding-left: 480px; padding-right: 480px; }
-  .slide.count-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); padding-left: 250px; padding-right: 250px; }
+    .display {
+      font-family: "Baloo 2", "Poppins", sans-serif;
+    }
 
-  .card {
-    background: var(--white);
-    border: 0;
-    border-radius: 86px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    text-align: center;
-    gap: 0;
-    padding: 46px 38px 36px;
-    min-width: 0;
-    min-height: 0;
-    overflow: hidden;
-    will-change: transform, opacity;
-    box-shadow: 0 12px 26px rgba(160, 15, 60, .28);
-  }
-  .brand-name {
-    font-family: "Baloo 2", sans-serif;
-    font-weight: 800;
-    font-size: 58px;
-    color: var(--blue-deep);
-    letter-spacing: 0;
-    line-height: .88;
-    overflow-wrap: anywhere;
-    text-transform: uppercase;
-  }
-  .brand-logo {
-    height: 132px;
-    max-width: 86%;
-    object-fit: contain;
-  }
-  .discount-label {
-    color: var(--blue-deep);
-    font-weight: 700;
-    font-size: 30px;
-    letter-spacing: .2em;
-    line-height: 1;
-    margin-top: 24px;
-    text-transform: uppercase;
-  }
+    /* ---------- Layar pilih outlet ---------- */
+    #setup {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3vh;
+      text-align: center;
+      padding: 24px;
+    }
 
-  .value {
-    font-family: "Poppins", "Segoe UI", sans-serif;
-    font-weight: 800;
-    line-height: .78;
-  }
-  .value.percent {
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    margin-top: 16px;
-    margin-bottom: 34px;
-    min-height: 240px;
-    width: 100%;
-    color: #000;
-    letter-spacing: -0.05em;
-  }
-  .percent-number {
-    font-size: 266px;
-    line-height: .78;
-  }
-  .percent-dot {
-    width: 120px;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: var(--hot-pink);
-    color: var(--white);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 70px;
-    font-weight: 800;
-    line-height: 1;
-    letter-spacing: 0;
-    margin-left: -34px;
-    margin-bottom: 8px;
-  }
-  .value.text {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 240px;
-    margin: 16px 0 34px;
-    font-size: 42px;
-    color: #000;
-    letter-spacing: 0;
-    overflow-wrap: anywhere;
-  }
+    .logo-title {
+      line-height: 1;
+    }
 
-  .scope-pill {
-    background: linear-gradient(180deg, var(--pink-1), var(--pink-2));
-    color: var(--white);
-    font-weight: 800;
-    font-size: 30px;
-    letter-spacing: .02em;
-    line-height: 1;
-    padding: .64em 1.9em .68em;
-    border-radius: 999px;
-    width: min(100%, 340px);
-    white-space: nowrap;
-    box-shadow: 0 5px 0 rgba(150, 30, 60, .3);
-  }
-  .period {
-    display: inline-flex;
-    align-items: center;
-    gap: 9px;
-    background: #FFEBF1;
-    color: var(--pink-2);
-    font-weight: 700;
-    font-size: 22px;
-    line-height: 1.1;
-    margin-top: 22px;
-    padding: .55em 1.15em;
-    border-radius: 999px;
-    white-space: nowrap;
-  }
-  .period svg {
-    width: 22px;
-    height: 22px;
-    flex: 0 0 auto;
-  }
+    .logo-title .t1 {
+      font-family: "Baloo 2", sans-serif;
+      font-weight: 800;
+      font-size: clamp(42px, 6vw, 100px);
+      color: var(--white);
+      letter-spacing: .03em;
+      text-shadow: none;
+    }
 
-  /* ---------- Progress slide berikutnya ---------- */
-  #progress {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 10px;
-    width: min(460px, 36%);
-    z-index: 3;
-  }
-  #progress:empty { display: none; }
-  .seg {
-    flex: 1;
-    height: 8px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, .38);
-    overflow: hidden;
-  }
-  .seg .fill {
-    display: block;
-    width: 100%;
-    height: 100%;
-    border-radius: inherit;
-    background: var(--yellow);
-    transform: scaleX(0);
-    transform-origin: left;
-  }
-  .seg.done .fill { transform: scaleX(1); }
-  .seg.run .fill { animation: segfill var(--slide-ms, 10000ms) linear forwards; }
-  @keyframes segfill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+    .logo-title .t2 {
+      font-family: "Baloo 2", sans-serif;
+      font-weight: 800;
+      font-size: clamp(42px, 5.65vw, 96px);
+      color: var(--yellow);
+      background: var(--red);
+      padding: .02em .34em .06em;
+      border-radius: .22em;
+      box-shadow: 0 7px 0 rgba(24, 55, 122, .34);
+      display: inline-block;
+      transform: rotate(-1.8deg);
+    }
 
-  #emptyState {
-    position: absolute;
-    inset: 0;
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2vh;
-    text-align: center;
-    padding: 24px;
-    z-index: 2;
-  }
-  #emptyState .big {
-    font-family: "Baloo 2", sans-serif;
-    font-weight: 800;
-    font-size: clamp(24px, 3.2vw, 52px);
-    text-shadow: 0 4px 0 rgba(150, 30, 60, .4);
-  }
-  #emptyState .small {
-    background: var(--yellow);
-    color: #7A4A00;
-    font-weight: 700;
-    font-size: clamp(13px, 1.4vw, 22px);
-    padding: .5em 1.6em;
-    border-radius: 999px;
-  }
+    .setup-card {
+      background: var(--white);
+      color: var(--ink);
+      border-radius: 26px;
+      padding: 4vh 4vw;
+      display: flex;
+      flex-direction: column;
+      gap: 2.4vh;
+      align-items: center;
+      box-shadow: 0 10px 0 rgba(29, 79, 184, .35);
+      min-width: min(560px, 88vw);
+    }
 
-  #gearBtn {
-    position: fixed;
-    top: 10px; left: 10px;
-    background: rgba(255, 255, 255, .9);
-    color: var(--blue-deep);
-    border: none;
-    border-radius: 999px;
-    padding: 6px 14px;
-    font-family: "Poppins", sans-serif;
-    font-weight: 700;
-    font-size: 14px;
-    opacity: 0;
-    cursor: pointer;
-    transition: opacity .3s;
-    z-index: 10;
-  }
-  body.show-cursor #gearBtn { opacity: .9; }
-  body:not(.show-cursor) { cursor: none; }
+    .setup-card label {
+      font-weight: 700;
+      font-size: clamp(15px, 1.5vw, 22px);
+    }
 
-  @media (prefers-reduced-motion: reduce) {
-    .slide { transition: none; }
-    .seg.run .fill { animation: none; transform: scaleX(1); }
-  }
-</style>
+    .select-wrap {
+      position: relative;
+      width: 100%;
+    }
+
+    .select-btn {
+      font-family: "Poppins", sans-serif;
+      font-weight: 600;
+      font-size: clamp(15px, 1.6vw, 22px);
+      padding: 14px 20px;
+      width: 100%;
+      background: #F2F6FF;
+      color: var(--ink);
+      border: 3px solid var(--blue-2);
+      border-radius: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      text-align: left;
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+
+    .select-btn:focus {
+      outline: none;
+      border-color: var(--pink-2);
+      box-shadow: 0 0 0 4px rgba(255, 56, 111, 0.25);
+    }
+
+    .select-btn svg {
+      width: 24px;
+      height: 24px;
+      color: var(--blue-2);
+      flex: 0 0 auto;
+      transition: transform .25s ease;
+    }
+
+    .select-wrap.open .select-btn svg {
+      transform: rotate(180deg);
+    }
+
+    .select-pop {
+      position: absolute;
+      top: calc(100% + 10px);
+      left: 0;
+      right: 0;
+      background: var(--white);
+      border-radius: 16px;
+      box-shadow: 0 18px 44px rgba(23, 48, 110, .35), 0 0 0 2px rgba(31, 69, 145, .08);
+      padding: 8px;
+      max-height: 340px;
+      overflow-y: auto;
+      z-index: 20;
+      text-align: left;
+    }
+
+    .select-pop[hidden] {
+      display: none;
+    }
+
+    .select-opt {
+      display: block;
+      width: 100%;
+      font-family: "Poppins", sans-serif;
+      font-weight: 600;
+      font-size: clamp(14px, 1.4vw, 20px);
+      color: var(--ink);
+      background: transparent;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 16px;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .select-opt:hover,
+    .select-opt:focus {
+      background: #F2F6FF;
+      color: var(--blue-2);
+      outline: none;
+    }
+
+    .select-opt[aria-selected="true"] {
+      background: #FFEBF1;
+      color: var(--pink-2);
+    }
+
+    .select-opt[aria-selected="true"]:focus {
+      background: #FFEBF1;
+      box-shadow: inset 0 0 0 2px var(--pink-2);
+    }
+
+    #startBtn {
+      font-family: "Baloo 2", sans-serif;
+      font-weight: 800;
+      font-size: clamp(17px, 1.8vw, 26px);
+      padding: .55em 2.4em;
+      background: linear-gradient(180deg, var(--pink-1), var(--pink-2));
+      color: var(--white);
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 6px 0 rgba(150, 30, 60, .4);
+      letter-spacing: .02em;
+    }
+
+    #startBtn:active {
+      transform: translateY(3px);
+      box-shadow: 0 3px 0 rgba(150, 30, 60, .4);
+    }
+
+    #startBtn:disabled {
+      opacity: .45;
+      cursor: default;
+    }
+
+    #setupStatus {
+      color: #EAF1FF;
+      font-weight: 600;
+      font-size: clamp(12px, 1.2vw, 17px);
+      min-height: 1.4em;
+    }
+
+    /* ---------- Layar signage ---------- */
+    #board {
+      flex-direction: column;
+      padding: 44px 58px 38px;
+      gap: 64px;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 19px;
+      flex: 0 0 auto;
+    }
+
+    #board .logo-title .t1 {
+      font-size: 100px;
+    }
+
+    #board .logo-title .t2 {
+      font-size: 96px;
+    }
+
+    .head-pill {
+      background: rgba(255, 255, 255, .92);
+      color: var(--blue-deep);
+      font-weight: 700;
+      font-size: 17px;
+      padding: .58em 1.35em;
+      border-radius: 999px;
+      box-shadow: 0 3px 0 rgba(31, 69, 145, .25), 0 0 0 2px rgba(31, 69, 145, .08) inset;
+      white-space: nowrap;
+      justify-self: start;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .head-pill svg {
+      width: 21px;
+      height: 21px;
+      color: var(--pink-2);
+      flex: 0 0 auto;
+    }
+
+    .head-pill.right {
+      justify-self: end;
+    }
+
+    .head-center {
+      text-align: center;
+    }
+
+    .panel {
+      flex: 1 1 auto;
+      position: relative;
+      background: var(--pink-2);
+      border: 5px solid var(--yellow);
+      border-radius: 32px;
+      box-shadow: 0 0 0 4px rgba(64, 206, 214, .52), 0 10px 20px rgba(31, 69, 145, .18);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slides-area {
+      position: relative;
+      flex: 1 1 auto;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 25px;
+      padding: 48px 62px 54px;
+      opacity: 0;
+      transform: scale(.985);
+      transition: opacity .7s ease, transform .7s ease;
+      pointer-events: none;
+    }
+
+    .slide.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .slide.count-1 {
+      grid-template-columns: minmax(0, 1fr);
+      padding-left: 480px;
+      padding-right: 480px;
+    }
+
+    .slide.count-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      padding-left: 250px;
+      padding-right: 250px;
+    }
+
+    .card {
+      background: var(--white);
+      border: 0;
+      border-radius: 86px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      text-align: center;
+      gap: 0;
+      padding: 46px 38px 36px;
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
+      will-change: transform, opacity;
+      box-shadow: 0 12px 26px rgba(160, 15, 60, .28);
+    }
+
+    .brand-name {
+      font-family: "Baloo 2", sans-serif;
+      font-weight: 800;
+      font-size: 58px;
+      color: var(--blue-deep);
+      letter-spacing: 0;
+      line-height: .88;
+      overflow-wrap: anywhere;
+      text-transform: uppercase;
+    }
+
+    .brand-logo {
+      height: 132px;
+      max-width: 86%;
+      object-fit: contain;
+    }
+
+    .discount-label {
+      color: var(--blue-deep);
+      font-weight: 700;
+      font-size: 30px;
+      letter-spacing: .2em;
+      line-height: 1;
+      margin-top: 24px;
+      text-transform: uppercase;
+    }
+
+    .value {
+      font-family: "Poppins", "Segoe UI", sans-serif;
+      font-weight: 800;
+      line-height: .78;
+    }
+
+    .value.percent {
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      margin-top: 16px;
+      margin-bottom: 34px;
+      min-height: 240px;
+      width: 100%;
+      color: #000;
+      letter-spacing: -0.05em;
+    }
+
+    .percent-number {
+      font-size: 266px;
+      line-height: .78;
+    }
+
+    .percent-dot {
+      width: 120px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: var(--hot-pink);
+      color: var(--white);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 70px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: 0;
+      margin-left: -34px;
+      margin-bottom: 8px;
+    }
+
+    .value.text {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 240px;
+      margin: 16px 0 34px;
+      font-size: 42px;
+      color: #000;
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .scope-pill {
+      background: linear-gradient(180deg, var(--pink-1), var(--pink-2));
+      color: var(--white);
+      font-weight: 800;
+      font-size: 30px;
+      letter-spacing: .02em;
+      line-height: 1;
+      padding: .64em 1.9em .68em;
+      border-radius: 999px;
+      width: min(100%, 340px);
+      white-space: nowrap;
+      box-shadow: 0 5px 0 rgba(150, 30, 60, .3);
+    }
+
+    .period {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: #FFEBF1;
+      color: var(--pink-2);
+      font-weight: 700;
+      font-size: 22px;
+      line-height: 1.1;
+      margin-top: 22px;
+      padding: .55em 1.15em;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .period svg {
+      width: 22px;
+      height: 22px;
+      flex: 0 0 auto;
+    }
+
+    /* ---------- Progress slide berikutnya ---------- */
+    #progress {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      width: min(460px, 36%);
+      z-index: 3;
+    }
+
+    #progress:empty {
+      display: none;
+    }
+
+    .seg {
+      flex: 1;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .38);
+      overflow: hidden;
+    }
+
+    .seg .fill {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--yellow);
+      transform: scaleX(0);
+      transform-origin: left;
+    }
+
+    .seg.done .fill {
+      transform: scaleX(1);
+    }
+
+    .seg.run .fill {
+      animation: segfill var(--slide-ms, 10000ms) linear forwards;
+    }
+
+    @keyframes segfill {
+      from {
+        transform: scaleX(0);
+      }
+
+      to {
+        transform: scaleX(1);
+      }
+    }
+
+    #emptyState {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2vh;
+      text-align: center;
+      padding: 24px;
+      z-index: 2;
+    }
+
+    #emptyState .big {
+      font-family: "Baloo 2", sans-serif;
+      font-weight: 800;
+      font-size: clamp(24px, 3.2vw, 52px);
+      text-shadow: 0 4px 0 rgba(150, 30, 60, .4);
+    }
+
+    #emptyState .small {
+      background: var(--yellow);
+      color: #7A4A00;
+      font-weight: 700;
+      font-size: clamp(13px, 1.4vw, 22px);
+      padding: .5em 1.6em;
+      border-radius: 999px;
+    }
+
+    #gearBtn {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: rgba(255, 255, 255, .9);
+      color: var(--blue-deep);
+      border: none;
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-family: "Poppins", sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      opacity: 0;
+      cursor: pointer;
+      transition: opacity .3s;
+      z-index: 10;
+    }
+
+    body.show-cursor #gearBtn {
+      opacity: .9;
+    }
+
+    body:not(.show-cursor) {
+      cursor: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .slide {
+        transition: none;
+      }
+
+      .seg.run .fill {
+        animation: none;
+        transform: scaleX(1);
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<button id="gearBtn" title="Ganti outlet">Ganti outlet</button>
+  <button id="gearBtn" title="Ganti outlet">Ganti outlet</button>
 
-<section id="setup" class="screen active">
-  <div class="logo-title"><span class="t1">PROMO</span> <span class="t2">HARI INI</span></div>
-  <div class="setup-card">
-    <label for="outletBtn">Pilih outlet untuk TV ini</label>
-    <div class="select-wrap" id="outletWrap">
-      <button type="button" class="select-btn" id="outletBtn" aria-haspopup="listbox" aria-expanded="false">
-        <span id="outletBtnLabel">Semua Outlet</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6l6 -6" /></svg>
-      </button>
-      <div class="select-pop" id="outletPop" role="listbox" hidden></div>
-    </div>
-    <button id="startBtn" disabled>Tampilkan Signage</button>
-  </div>
-  <div id="setupStatus">Memuat daftar outlet&hellip;</div>
-</section>
-
-<section id="board" class="screen">
-  <header>
-    <div class="head-pill">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" /><path d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z" /></svg>
-      <span id="outletLine"></span>
-    </div>
-    <div class="head-center">
-      <div class="logo-title"><span class="t1">PROMO</span> <span class="t2">HARI INI</span></div>
-    </div>
-    <div class="head-pill right">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 7v5l3 3" /></svg>
-      <span><span id="dateLine"></span> - <span id="clockLine"></span> WITA</span>
-    </div>
-  </header>
-
-  <div class="panel">
-    <div class="slides-area" id="slidesHost">
-      <div id="emptyState">
-        <div class="big">Belum ada promo untuk hari ini</div>
-        <div class="small">Nantikan penawaran menarik berikutnya!</div>
+  <section id="setup" class="screen active">
+    <div class="logo-title"><span class="t1">PROMO</span> <span class="t2">HARI INI</span></div>
+    <div class="setup-card">
+      <label for="outletBtn">Pilih outlet untuk TV ini</label>
+      <div class="select-wrap" id="outletWrap">
+        <button type="button" class="select-btn" id="outletBtn" aria-haspopup="listbox" aria-expanded="false">
+          <span id="outletBtnLabel">Semua Outlet</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 9l6 6l6 -6" />
+          </svg>
+        </button>
+        <div class="select-pop" id="outletPop" role="listbox" hidden></div>
       </div>
+      <button id="startBtn" disabled>Tampilkan Signage</button>
     </div>
-    <div id="progress"></div>
-  </div>
-</section>
+    <div id="setupStatus">Memuat daftar outlet&hellip;</div>
+  </section>
 
-<script type="module">
-(function () {
-  'use strict';
+  <section id="board" class="screen">
+    <header>
+      <div class="head-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true">
+          <path d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+          <path d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z" />
+        </svg>
+        <span id="outletLine"></span>
+      </div>
+      <div class="head-center">
+        <div class="logo-title"><span class="t1">PROMO</span> <span class="t2">HARI INI</span></div>
+      </div>
+      <div class="head-pill right">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+          <path d="M12 7v5l3 3" />
+        </svg>
+        <span><span id="dateLine"></span> - <span id="clockLine"></span> WITA</span>
+      </div>
+    </header>
 
-  var API_URL = '/api/promos';
-  var SLIDE_MS = 10000;
-  var PROMOS_PER_SLIDE = 3;
-  var REFRESH_HOURS = [8, 12, 18];      // jadwal tarik data, WITA
-  var TZ = 'Asia/Makassar';             // WITA
-  var STORAGE_KEY = 'phi_outlet_v1';
-  var STAGE_W = 1920;
-  var STAGE_H = 1080;
+    <div class="panel">
+      <div class="slides-area" id="slidesHost">
+        <div id="emptyState">
+          <div class="big">Belum ada promo untuk hari ini</div>
+          <div class="small">Nantikan penawaran menarik berikutnya!</div>
+        </div>
+      </div>
+      <div id="progress"></div>
+    </div>
+  </section>
 
-  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  <script type="module">
+    (function () {
+      'use strict';
 
-  document.documentElement.style.setProperty('--slide-ms', SLIDE_MS + 'ms');
+      var API_URL = '/api/promos';
+      var SLIDE_MS = 5000;
+      var PROMOS_PER_SLIDE = 3;
+      var REFRESH_HOURS = [8, 12, 18];      // jadwal tarik data, WITA
+      var TZ = 'Asia/Makassar';             // WITA
+      var STORAGE_KEY = 'phi_outlet_v1';
+      var STAGE_W = 1920;
+      var STAGE_H = 1080;
 
-  // Motion (motion.dev) dimuat dari CDN; signage tetap jalan bila CDN gagal.
-  var motionLib = null;
-  if (!reducedMotion) {
-    import('https://cdn.jsdelivr.net/npm/motion@11.13.5/+esm')
-      .then(function (m) { motionLib = m; })
-      .catch(function () { motionLib = null; });
-  }
+      var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  var state = {
-    raw: null,
-    outlet: null,          // {kode, nama} atau {kode:'ALL', nama:'Semua Outlet'}
-    slides: [],
-    slideIndex: 0,
-    slideTimer: null,
-    lastSlotKey: null,
-    fetchFailed: false
-  };
+      document.documentElement.style.setProperty('--slide-ms', SLIDE_MS + 'ms');
 
-  function fitStage() {
-    var viewportW = window.innerWidth || document.documentElement.clientWidth || STAGE_W;
-    var viewportH = window.innerHeight || document.documentElement.clientHeight || STAGE_H;
-    var scale = Math.min(viewportW / STAGE_W, viewportH / STAGE_H);
-    var left = Math.max(0, (viewportW - STAGE_W * scale) / 2);
-    var top = Math.max(0, (viewportH - STAGE_H * scale) / 2);
-    var transform = 'translate(' + left + 'px, ' + top + 'px) scale(' + scale + ')';
-    document.querySelectorAll('.screen').forEach(function (el) {
-      el.style.transform = transform;
-    });
-  }
-
-  /* ---------- Util waktu (WITA) ---------- */
-  function witaParts(date) {
-    var fmt = new Intl.DateTimeFormat('id-ID', {
-      timeZone: TZ,
-      year: 'numeric', month: '2-digit', day: '2-digit',
-      hour: '2-digit', minute: '2-digit', second: '2-digit',
-      hour12: false
-    });
-    var parts = {};
-    fmt.formatToParts(date || new Date()).forEach(function (p) { parts[p.type] = p.value; });
-    return parts;
-  }
-
-  function fmtDateLong(date) {
-    return new Intl.DateTimeFormat('id-ID', {
-      timeZone: TZ, weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-    }).format(date || new Date());
-  }
-
-  function fmtDateShort(date) {
-    return new Intl.DateTimeFormat('id-ID', {
-      timeZone: TZ, day: 'numeric', month: 'short', year: 'numeric'
-    }).format(date).toUpperCase();
-  }
-
-  // Tanggal akhir yang jatuh tepat pukul 00:00 WITA dianggap batas eksklusif
-  // (mis. selesai 19 Juli 00:00 WITA berarti berlaku s/d 18 Juli).
-  function fmtPeriod(startIso, endIso) {
-    if (!startIso || !endIso) return '';
-    var start = new Date(startIso);
-    var end = new Date(endIso);
-    var ep = witaParts(end);
-    if (ep.hour === '00' && ep.minute === '00') {
-      end = new Date(end.getTime() - 60000);
-    }
-    return fmtDateShort(start) + ' – ' + fmtDateShort(end);
-  }
-
-  /* ---------- Data ---------- */
-  function fetchPromos() {
-    return fetch(API_URL, { cache: 'no-store' })
-      .then(function (r) {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
-      })
-      .then(function (data) {
-        state.raw = data;
-        state.fetchFailed = false;
-        return data;
-      })
-      .catch(function () {
-        state.fetchFailed = true;
-        return null; // pertahankan data lama jika ada
-      });
-  }
-
-  function allOutletsFromData() {
-    var map = {};
-    var promos = (state.raw && state.raw.promos) || [];
-    promos.forEach(function (p) {
-      (p.outlets || []).forEach(function (o) {
-        if (o && o.kode) map[o.kode] = o.nama || o.kode;
-      });
-    });
-    return Object.keys(map)
-      .map(function (k) { return { kode: k, nama: map[k] }; })
-      .sort(function (a, b) {
-        return a.nama.localeCompare(b.nama, 'id', { numeric: true, sensitivity: 'base' });
-      });
-  }
-
-  function promoAppliesTo(promo, outletKode) {
-    if (outletKode === 'ALL') return true;
-    var outs = promo.outlets || [];
-    if (outs.length === 0) return true; // tanpa daftar outlet = berlaku semua
-    return outs.some(function (o) {
-      if (!o) return false;
-      var kode = String(o.kode || '').toUpperCase();
-      var nama = String(o.nama || '').toLowerCase();
-      return kode === String(outletKode).toUpperCase() ||
-             kode === 'ALL' || nama.indexOf('semua') !== -1;
-    });
-  }
-
-  /* ---------- Kartu promo ---------- */
-  function extractPercent(besaranDiskon) {
-    if (!besaranDiskon) return null;
-    var m = /([0-9]+(?:[.,][0-9]+)?)\s*%/.exec(besaranDiskon);
-    return m ? m[1].replace('.', ',') + '%' : null;
-  }
-
-  function scopeLabel(scope) {
-    if (!scope) return '';
-    if (String(scope).toLowerCase() === 'all_product') return 'SEMUA PRODUK';
-    return 'SELECTED ITEM';
-  }
-
-  function promoLabel(promo) {
-    var discountVal = promo.besaran_diskon || '';
-    if (/up\s*to/i.test(discountVal)) {
-      return 'DISCOUNT UP TO';
-    }
-    var j = String(promo.jenis_promo || '').toLowerCase();
-    if (j === 'diskon') return 'DISCOUNT';
-    return String(promo.jenis_promo || 'PROMO').toUpperCase();
-  }
-
-  function buildCard(promo) {
-    var card = document.createElement('div');
-    card.className = 'card';
-
-    var brand;
-    if (promo.brand_logo_url) {
-      brand = document.createElement('img');
-      brand.className = 'brand-logo';
-      brand.src = promo.brand_logo_url;
-      brand.alt = promo.brand || '';
-    } else {
-      brand = document.createElement('div');
-      brand.className = 'brand-name';
-      brand.textContent = promo.brand || '';
-    }
-
-    var label = document.createElement('div');
-    label.className = 'discount-label';
-    label.textContent = promoLabel(promo);
-
-    var value = document.createElement('div');
-    var pct = String(promo.jenis_promo || '').toLowerCase() === 'diskon'
-      ? (extractPercent(promo.besaran_diskon) || extractPercent(promo.mekanisme)) : null;
-    if (pct) {
-      value.className = 'value percent';
-      var number = document.createElement('span');
-      number.className = 'percent-number';
-      number.textContent = pct.replace('%', '');
-      number.dataset.target = pct.replace('%', '');
-      var dot = document.createElement('span');
-      dot.className = 'percent-dot';
-      dot.textContent = '%';
-      value.appendChild(number);
-      value.appendChild(dot);
-    } else {
-      value.className = 'value text';
-      value.textContent = promo.mekanisme || promo.nama_promo || '';
-    }
-
-    var scope = document.createElement('div');
-    scope.className = 'scope-pill';
-    scope.textContent = scopeLabel(promo.product_scope);
-
-    var period = document.createElement('div');
-    period.className = 'period';
-    period.innerHTML =
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
-      'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-      '<path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" />' +
-      '<path d="M16 3v4" /><path d="M8 3v4" /><path d="M4 11h16" />' +
-      '</svg>';
-    period.appendChild(
-      document.createTextNode(fmtPeriod(promo.periode_mulai, promo.periode_selesai))
-    );
-
-    card.appendChild(brand);
-    card.appendChild(label);
-    card.appendChild(value);
-    card.appendChild(scope);
-    card.appendChild(period);
-    return card;
-  }
-
-  /* ---------- Animasi slide (Motion) ---------- */
-  function animateSlideIn(slide) {
-    if (!motionLib || reducedMotion) return;
-
-    // Kartu masuk berurutan dengan spring
-    var cards = slide.querySelectorAll('.card');
-    if (cards.length) {
-      motionLib.animate(
-        cards,
-        {
-          opacity: [0, 1],
-          transform: ['translateY(44px) scale(.96)', 'translateY(0px) scale(1)']
-        },
-        { delay: motionLib.stagger(0.1), type: 'spring', stiffness: 110, damping: 16 }
-      );
-    }
-
-    // Angka diskon count-up dari 0
-    slide.querySelectorAll('.percent-number').forEach(function (el) {
-      var raw = el.dataset.target || '';
-      if (raw.indexOf(',') !== -1) return; // angka desimal: tampilkan langsung
-      var target = parseInt(raw, 10);
-      if (isNaN(target)) return;
-      motionLib.animate(0, target, {
-        duration: 1.1,
-        ease: [0.16, 1, 0.3, 1],
-        onUpdate: function (v) { el.textContent = Math.round(v); }
-      });
-    });
-
-    // Lencana % muncul menyusul angka
-    slide.querySelectorAll('.percent-dot').forEach(function (el) {
-      motionLib.animate(
-        el,
-        { opacity: [0, 1], transform: ['scale(.4)', 'scale(1)'] },
-        { delay: .55, type: 'spring', stiffness: 260, damping: 14 }
-      );
-    });
-  }
-
-  /* ---------- Slide ---------- */
-  function rebuildSlides() {
-    var host = document.getElementById('slidesHost');
-    var empty = document.getElementById('emptyState');
-    host.querySelectorAll('.slide').forEach(function (el) { el.remove(); });
-
-    var promos = ((state.raw && state.raw.promos) || [])
-      .filter(function (p) { return promoAppliesTo(p, state.outlet.kode); });
-
-    state.slides = [];
-    for (var i = 0; i < promos.length; i += PROMOS_PER_SLIDE) {
-      state.slides.push(promos.slice(i, i + PROMOS_PER_SLIDE));
-    }
-
-    empty.style.display = state.slides.length ? 'none' : 'flex';
-
-    state.slides.forEach(function (group) {
-      var slide = document.createElement('div');
-      slide.className = 'slide count-' + Math.min(group.length, 3);
-      group.forEach(function (p) { slide.appendChild(buildCard(p)); });
-      host.appendChild(slide);
-    });
-
-    var progress = document.getElementById('progress');
-    progress.innerHTML = '';
-    if (state.slides.length > 1) {
-      state.slides.forEach(function () {
-        var seg = document.createElement('div');
-        seg.className = 'seg';
-        var fill = document.createElement('span');
-        fill.className = 'fill';
-        seg.appendChild(fill);
-        progress.appendChild(seg);
-      });
-    }
-
-    state.slideIndex = 0;
-    showSlide(0);
-    restartRotation();
-  }
-
-  function showSlide(idx) {
-    var slides = document.querySelectorAll('#slidesHost .slide');
-    var segs = document.querySelectorAll('#progress .seg');
-    slides.forEach(function (el, i) {
-      var on = i === idx;
-      el.classList.toggle('visible', on);
-      if (on) animateSlideIn(el);
-    });
-    segs.forEach(function (el, i) {
-      el.classList.remove('run');
-      el.classList.toggle('done', i < idx);
-      if (i === idx) {
-        void el.offsetWidth; // paksa reflow agar animasi fill restart
-        el.classList.add('run');
+      // Motion (motion.dev) dimuat dari CDN; signage tetap jalan bila CDN gagal.
+      var motionLib = null;
+      if (!reducedMotion) {
+        import('https://cdn.jsdelivr.net/npm/motion@11.13.5/+esm')
+          .then(function (m) { motionLib = m; })
+          .catch(function () { motionLib = null; });
       }
-    });
-  }
 
-  function restartRotation() {
-    if (state.slideTimer) clearInterval(state.slideTimer);
-    if (state.slides.length <= 1) return;
-    state.slideTimer = setInterval(function () {
-      state.slideIndex = (state.slideIndex + 1) % state.slides.length;
-      showSlide(state.slideIndex);
-    }, SLIDE_MS);
-  }
+      var state = {
+        raw: null,
+        outlet: null,          // {kode, nama} atau {kode:'ALL', nama:'Semua Outlet'}
+        slides: [],
+        slideIndex: 0,
+        slideTimer: null,
+        lastSlotKey: null,
+        fetchFailed: false
+      };
 
-  /* ---------- Jadwal refresh (08.00 / 12.00 / 18.00 WITA + ganti hari) ---------- */
-  function currentSlotKey() {
-    var p = witaParts();
-    var hour = parseInt(p.hour, 10);
-    var slot = 'awal';
-    REFRESH_HOURS.forEach(function (h) { if (hour >= h) slot = 'j' + h; });
-    return p.year + '-' + p.month + '-' + p.day + '/' + slot;
-  }
+      function fitStage() {
+        var viewportW = window.innerWidth || document.documentElement.clientWidth || STAGE_W;
+        var viewportH = window.innerHeight || document.documentElement.clientHeight || STAGE_H;
+        var scale = Math.min(viewportW / STAGE_W, viewportH / STAGE_H);
+        var left = Math.max(0, (viewportW - STAGE_W * scale) / 2);
+        var top = Math.max(0, (viewportH - STAGE_H * scale) / 2);
+        var transform = 'translate(' + left + 'px, ' + top + 'px) scale(' + scale + ')';
+        document.querySelectorAll('.screen').forEach(function (el) {
+          el.style.transform = transform;
+        });
+      }
 
-  function scheduleTick() {
-    var key = currentSlotKey();
-    if (key !== state.lastSlotKey || state.fetchFailed) {
-      state.lastSlotKey = key;
-      fetchPromos().then(function () { if (state.outlet) rebuildSlides(); });
-    }
-  }
+      /* ---------- Util waktu (WITA) ---------- */
+      function witaParts(date) {
+        var fmt = new Intl.DateTimeFormat('id-ID', {
+          timeZone: TZ,
+          year: 'numeric', month: '2-digit', day: '2-digit',
+          hour: '2-digit', minute: '2-digit', second: '2-digit',
+          hour12: false
+        });
+        var parts = {};
+        fmt.formatToParts(date || new Date()).forEach(function (p) { parts[p.type] = p.value; });
+        return parts;
+      }
 
-  /* ---------- Header jam & tanggal ---------- */
-  function tickClock() {
-    var p = witaParts();
-    document.getElementById('clockLine').textContent = p.hour + ':' + p.minute;
-    document.getElementById('dateLine').textContent = fmtDateLong();
-  }
+      function fmtDateLong(date) {
+        return new Intl.DateTimeFormat('id-ID', {
+          timeZone: TZ, weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+        }).format(date || new Date());
+      }
 
-  /* ---------- Layar setup: dropdown custom ---------- */
-  var outletChoices = [];   // {kode, nama, label}
-  var selectedChoice = null;
+      function fmtDateShort(date) {
+        return new Intl.DateTimeFormat('id-ID', {
+          timeZone: TZ, day: 'numeric', month: 'short', year: 'numeric'
+        }).format(date).toUpperCase();
+      }
 
-  function renderOutletOptions() {
-    var pop = document.getElementById('outletPop');
-    pop.innerHTML = '';
-    outletChoices.forEach(function (c) {
-      var opt = document.createElement('button');
-      opt.type = 'button';
-      opt.className = 'select-opt';
-      opt.setAttribute('role', 'option');
-      opt.setAttribute('aria-selected', selectedChoice && selectedChoice.kode === c.kode ? 'true' : 'false');
-      opt.textContent = c.label;
-      opt.addEventListener('click', function () { chooseOutlet(c); });
-      pop.appendChild(opt);
-    });
-  }
+      // Tanggal akhir yang jatuh tepat pukul 00:00 WITA dianggap batas eksklusif
+      // (mis. selesai 19 Juli 00:00 WITA berarti berlaku s/d 18 Juli).
+      function fmtPeriod(startIso, endIso) {
+        if (!startIso || !endIso) return '';
+        var start = new Date(startIso);
+        var end = new Date(endIso);
+        var ep = witaParts(end);
+        if (ep.hour === '00' && ep.minute === '00') {
+          end = new Date(end.getTime() - 60000);
+        }
+        return fmtDateShort(start) + ' – ' + fmtDateShort(end);
+      }
 
-  function chooseOutlet(c) {
-    selectedChoice = c;
-    document.getElementById('outletBtnLabel').textContent = c.label;
-    renderOutletOptions();
-    setDropdownOpen(false);
-  }
+      /* ---------- Data ---------- */
+      function fetchPromos() {
+        return fetch(API_URL, { cache: 'no-store' })
+          .then(function (r) {
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.json();
+          })
+          .then(function (data) {
+            state.raw = data;
+            state.fetchFailed = false;
+            return data;
+          })
+          .catch(function () {
+            state.fetchFailed = true;
+            return null; // pertahankan data lama jika ada
+          });
+      }
 
-  function setDropdownOpen(open) {
-    var wrap = document.getElementById('outletWrap');
-    var pop = document.getElementById('outletPop');
-    var btn = document.getElementById('outletBtn');
-    wrap.classList.toggle('open', open);
-    pop.hidden = !open;
-    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-  }
+      function allOutletsFromData() {
+        var map = {};
+        var promos = (state.raw && state.raw.promos) || [];
+        promos.forEach(function (p) {
+          (p.outlets || []).forEach(function (o) {
+            if (o && o.kode) map[o.kode] = o.nama || o.kode;
+          });
+        });
+        return Object.keys(map)
+          .map(function (k) { return { kode: k, nama: map[k] }; })
+          .sort(function (a, b) {
+            return a.nama.localeCompare(b.nama, 'id', { numeric: true, sensitivity: 'base' });
+          });
+      }
 
-  function populateOutletSelect() {
-    var status = document.getElementById('setupStatus');
-    var btn = document.getElementById('startBtn');
+      function promoAppliesTo(promo, outletKode) {
+        if (outletKode === 'ALL') return true;
+        var outs = promo.outlets || [];
+        if (outs.length === 0) return true; // tanpa daftar outlet = berlaku semua
+        return outs.some(function (o) {
+          if (!o) return false;
+          var kode = String(o.kode || '').toUpperCase();
+          var nama = String(o.nama || '').toLowerCase();
+          return kode === String(outletKode).toUpperCase() ||
+            kode === 'ALL' || nama.indexOf('semua') !== -1;
+        });
+      }
 
-    outletChoices = [{ kode: 'ALL', nama: 'Semua Outlet', label: 'Semua Outlet' }];
-    allOutletsFromData().forEach(function (o) {
-      outletChoices.push({ kode: o.kode, nama: o.nama, label: o.nama + ' (' + o.kode + ')' });
-    });
+      /* ---------- Kartu promo ---------- */
+      function extractPercent(besaranDiskon) {
+        if (!besaranDiskon) return null;
+        var m = /([0-9]+(?:[.,][0-9]+)?)\s*%/.exec(besaranDiskon);
+        return m ? m[1].replace('.', ',') + '%' : null;
+      }
 
-    if (!selectedChoice || !outletChoices.some(function (c) { return c.kode === selectedChoice.kode; })) {
-      selectedChoice = outletChoices[0];
-    }
-    document.getElementById('outletBtnLabel').textContent = selectedChoice.label;
-    renderOutletOptions();
+      function scopeLabel(scope) {
+        if (!scope) return '';
+        if (String(scope).toLowerCase() === 'all_product') return 'SEMUA PRODUK';
+        return 'SELECTED ITEM';
+      }
 
-    if (state.fetchFailed) {
-      status.textContent = 'Gagal memuat data. Periksa koneksi — mencoba ulang otomatis.';
-      setTimeout(loadForSetup, 15000);
-    } else {
-      status.textContent = '';
-    }
-    btn.disabled = false;
-  }
+      function promoLabel(promo) {
+        var discountVal = promo.besaran_diskon || '';
+        if (/up\s*to/i.test(discountVal)) {
+          return 'DISCOUNT UP TO';
+        }
+        var j = String(promo.jenis_promo || '').toLowerCase();
+        if (j === 'diskon') return 'DISCOUNT';
+        return String(promo.jenis_promo || 'PROMO').toUpperCase();
+      }
 
-  function loadForSetup() {
-    fetchPromos().then(populateOutletSelect);
-  }
+      function buildCard(promo) {
+        var card = document.createElement('div');
+        card.className = 'card';
 
-  // Layar penuh untuk TV toko; wajib dipanggil dari gesture pengguna (klik).
-  function requestFullscreenSafe() {
-    var el = document.documentElement;
-    var already = document.fullscreenElement || document.webkitFullscreenElement;
-    if (already) return;
-    var fn = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
-    if (!fn) return;
-    try {
-      var p = fn.call(el);
-      if (p && p.catch) p.catch(function () {});
-    } catch (e) {}
-  }
+        var brand;
+        if (promo.brand_logo_url) {
+          brand = document.createElement('img');
+          brand.className = 'brand-logo';
+          brand.src = promo.brand_logo_url;
+          brand.alt = promo.brand || '';
+        } else {
+          brand = document.createElement('div');
+          brand.className = 'brand-name';
+          brand.textContent = promo.brand || '';
+        }
 
-  function startBoard() {
-    if (!selectedChoice) return;
-    requestFullscreenSafe();
-    state.outlet = {
-      kode: selectedChoice.kode,
-      nama: selectedChoice.kode === 'ALL' ? 'Semua Outlet' : selectedChoice.label
-    };
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state.outlet)); } catch (e) {}
-    enterBoard();
-  }
+        var label = document.createElement('div');
+        label.className = 'discount-label';
+        label.textContent = promoLabel(promo);
 
-  function enterBoard() {
-    document.getElementById('setup').classList.remove('active');
-    document.getElementById('board').classList.add('active');
-    document.getElementById('outletLine').textContent = state.outlet.nama;
-    state.lastSlotKey = currentSlotKey();
-    rebuildSlides();
-  }
+        var value = document.createElement('div');
+        var pct = String(promo.jenis_promo || '').toLowerCase() === 'diskon'
+          ? (extractPercent(promo.besaran_diskon) || extractPercent(promo.mekanisme)) : null;
+        if (pct) {
+          value.className = 'value percent';
+          var number = document.createElement('span');
+          number.className = 'percent-number';
+          number.textContent = pct.replace('%', '');
+          number.dataset.target = pct.replace('%', '');
+          var dot = document.createElement('span');
+          dot.className = 'percent-dot';
+          dot.textContent = '%';
+          value.appendChild(number);
+          value.appendChild(dot);
+        } else {
+          value.className = 'value text';
+          value.textContent = promo.mekanisme || promo.nama_promo || '';
+        }
 
-  function backToSetup() {
-    document.getElementById('board').classList.remove('active');
-    document.getElementById('setup').classList.add('active');
-    if (state.slideTimer) clearInterval(state.slideTimer);
-    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
-    state.outlet = null;
-    loadForSetup();
-  }
+        var scope = document.createElement('div');
+        scope.className = 'scope-pill';
+        scope.textContent = scopeLabel(promo.product_scope);
 
-  /* ---------- Kursor & tombol ganti outlet ---------- */
-  var cursorTimer = null;
-  document.addEventListener('mousemove', function () {
-    document.body.classList.add('show-cursor');
-    if (cursorTimer) clearTimeout(cursorTimer);
-    cursorTimer = setTimeout(function () {
-      document.body.classList.remove('show-cursor');
-    }, 4000);
-  });
+        var period = document.createElement('div');
+        period.className = 'period';
+        period.innerHTML =
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
+          'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+          '<path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" />' +
+          '<path d="M16 3v4" /><path d="M8 3v4" /><path d="M4 11h16" />' +
+          '</svg>';
+        period.appendChild(
+          document.createTextNode(fmtPeriod(promo.periode_mulai, promo.periode_selesai))
+        );
 
-  document.getElementById('startBtn').addEventListener('click', startBoard);
-  document.getElementById('gearBtn').addEventListener('click', backToSetup);
+        card.appendChild(brand);
+        card.appendChild(label);
+        card.appendChild(value);
+        card.appendChild(scope);
+        card.appendChild(period);
+        return card;
+      }
 
-  document.getElementById('outletBtn').addEventListener('click', function (e) {
-    e.stopPropagation();
-    setDropdownOpen(document.getElementById('outletPop').hidden);
-  });
-  document.addEventListener('click', function (e) {
-    if (!document.getElementById('outletWrap').contains(e.target)) setDropdownOpen(false);
-  });
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') setDropdownOpen(false);
-  });
-  window.addEventListener('resize', fitStage);
-  if (window.visualViewport) window.visualViewport.addEventListener('resize', fitStage);
+      /* ---------- Animasi slide (Motion) ---------- */
+      function animateSlideIn(slide) {
+        if (!motionLib || reducedMotion) return;
 
-  /* ---------- Boot ---------- */
-  fitStage();
-  tickClock();
-  setInterval(tickClock, 1000);
-  setInterval(scheduleTick, 30000);
+        // Kartu masuk berurutan dengan spring
+        var cards = slide.querySelectorAll('.card');
+        if (cards.length) {
+          motionLib.animate(
+            cards,
+            {
+              opacity: [0, 1],
+              transform: ['translateY(44px) scale(.96)', 'translateY(0px) scale(1)']
+            },
+            { delay: motionLib.stagger(0.1), type: 'spring', stiffness: 110, damping: 16 }
+          );
+        }
 
-  var saved = null;
-  try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch (e) {}
+        // Angka diskon count-up dari 0
+        slide.querySelectorAll('.percent-number').forEach(function (el) {
+          var raw = el.dataset.target || '';
+          if (raw.indexOf(',') !== -1) return; // angka desimal: tampilkan langsung
+          var target = parseInt(raw, 10);
+          if (isNaN(target)) return;
+          motionLib.animate(0, target, {
+            duration: 1.1,
+            ease: [0.16, 1, 0.3, 1],
+            onUpdate: function (v) { el.textContent = Math.round(v); }
+          });
+        });
 
-  if (saved && saved.kode) {
-    state.outlet = saved;
-    fetchPromos().then(enterBoard);
-  } else {
-    loadForSetup();
-  }
-})();
-</script>
+        // Lencana % muncul menyusul angka
+        slide.querySelectorAll('.percent-dot').forEach(function (el) {
+          motionLib.animate(
+            el,
+            { opacity: [0, 1], transform: ['scale(.4)', 'scale(1)'] },
+            { delay: .55, type: 'spring', stiffness: 260, damping: 14 }
+          );
+        });
+      }
+
+      /* ---------- Slide ---------- */
+      function rebuildSlides() {
+        var host = document.getElementById('slidesHost');
+        var empty = document.getElementById('emptyState');
+        host.querySelectorAll('.slide').forEach(function (el) { el.remove(); });
+
+        var promos = ((state.raw && state.raw.promos) || [])
+          .filter(function (p) { return promoAppliesTo(p, state.outlet.kode); });
+
+        state.slides = [];
+        for (var i = 0; i < promos.length; i += PROMOS_PER_SLIDE) {
+          state.slides.push(promos.slice(i, i + PROMOS_PER_SLIDE));
+        }
+
+        empty.style.display = state.slides.length ? 'none' : 'flex';
+
+        state.slides.forEach(function (group) {
+          var slide = document.createElement('div');
+          slide.className = 'slide count-' + Math.min(group.length, 3);
+          group.forEach(function (p) { slide.appendChild(buildCard(p)); });
+          host.appendChild(slide);
+        });
+
+        var progress = document.getElementById('progress');
+        progress.innerHTML = '';
+        if (state.slides.length > 1) {
+          state.slides.forEach(function () {
+            var seg = document.createElement('div');
+            seg.className = 'seg';
+            var fill = document.createElement('span');
+            fill.className = 'fill';
+            seg.appendChild(fill);
+            progress.appendChild(seg);
+          });
+        }
+
+        state.slideIndex = 0;
+        showSlide(0);
+        restartRotation();
+      }
+
+      function showSlide(idx) {
+        var slides = document.querySelectorAll('#slidesHost .slide');
+        var segs = document.querySelectorAll('#progress .seg');
+        slides.forEach(function (el, i) {
+          var on = i === idx;
+          el.classList.toggle('visible', on);
+          if (on) animateSlideIn(el);
+        });
+        segs.forEach(function (el, i) {
+          el.classList.remove('run');
+          el.classList.toggle('done', i < idx);
+          if (i === idx) {
+            void el.offsetWidth; // paksa reflow agar animasi fill restart
+            el.classList.add('run');
+          }
+        });
+      }
+
+      function restartRotation() {
+        if (state.slideTimer) clearInterval(state.slideTimer);
+        if (state.slides.length <= 1) return;
+        state.slideTimer = setInterval(function () {
+          state.slideIndex = (state.slideIndex + 1) % state.slides.length;
+          showSlide(state.slideIndex);
+        }, SLIDE_MS);
+      }
+
+      /* ---------- Jadwal refresh (08.00 / 12.00 / 18.00 WITA + ganti hari) ---------- */
+      function currentSlotKey() {
+        var p = witaParts();
+        var hour = parseInt(p.hour, 10);
+        var slot = 'awal';
+        REFRESH_HOURS.forEach(function (h) { if (hour >= h) slot = 'j' + h; });
+        return p.year + '-' + p.month + '-' + p.day + '/' + slot;
+      }
+
+      function scheduleTick() {
+        var key = currentSlotKey();
+        if (key !== state.lastSlotKey || state.fetchFailed) {
+          state.lastSlotKey = key;
+          fetchPromos().then(function () { if (state.outlet) rebuildSlides(); });
+        }
+      }
+
+      /* ---------- Header jam & tanggal ---------- */
+      function tickClock() {
+        var p = witaParts();
+        document.getElementById('clockLine').textContent = p.hour + ':' + p.minute;
+        document.getElementById('dateLine').textContent = fmtDateLong();
+      }
+
+      /* ---------- Layar setup: dropdown custom ---------- */
+      var outletChoices = [];   // {kode, nama, label}
+      var selectedChoice = null;
+
+      function renderOutletOptions() {
+        var pop = document.getElementById('outletPop');
+        pop.innerHTML = '';
+        outletChoices.forEach(function (c) {
+          var opt = document.createElement('button');
+          opt.type = 'button';
+          opt.className = 'select-opt';
+          opt.setAttribute('role', 'option');
+          opt.setAttribute('aria-selected', selectedChoice && selectedChoice.kode === c.kode ? 'true' : 'false');
+          opt.textContent = c.label;
+          opt.addEventListener('click', function () { chooseOutlet(c); });
+          pop.appendChild(opt);
+        });
+      }
+
+      function chooseOutlet(c) {
+        selectedChoice = c;
+        document.getElementById('outletBtnLabel').textContent = c.label;
+        renderOutletOptions();
+        setDropdownOpen(false);
+        startBoard();
+      }
+
+      function setDropdownOpen(open) {
+        var wrap = document.getElementById('outletWrap');
+        var pop = document.getElementById('outletPop');
+        var btn = document.getElementById('outletBtn');
+        wrap.classList.toggle('open', open);
+        pop.hidden = !open;
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+
+        if (open) {
+          var options = Array.from(pop.querySelectorAll('.select-opt'));
+          var selectedIdx = outletChoices.findIndex(function (c) { return c.kode === selectedChoice.kode; });
+          var targetOpt = (selectedIdx !== -1 && options[selectedIdx]) ? options[selectedIdx] : options[0];
+          if (targetOpt) {
+            targetOpt.focus();
+            targetOpt.scrollIntoView({ block: 'nearest' });
+          }
+        } else {
+          if (wrap.contains(document.activeElement)) {
+            btn.focus();
+          }
+        }
+      }
+
+      function populateOutletSelect() {
+        var status = document.getElementById('setupStatus');
+        var btn = document.getElementById('startBtn');
+
+        outletChoices = [{ kode: 'ALL', nama: 'Semua Outlet', label: 'Semua Outlet' }];
+        allOutletsFromData().forEach(function (o) {
+          outletChoices.push({ kode: o.kode, nama: o.nama, label: o.nama + ' (' + o.kode + ')' });
+        });
+
+        if (!selectedChoice || !outletChoices.some(function (c) { return c.kode === selectedChoice.kode; })) {
+          selectedChoice = outletChoices[0];
+        }
+        document.getElementById('outletBtnLabel').textContent = selectedChoice.label;
+        renderOutletOptions();
+
+        if (state.fetchFailed) {
+          status.textContent = 'Gagal memuat data. Periksa koneksi — mencoba ulang otomatis.';
+          setTimeout(loadForSetup, 15000);
+        } else {
+          status.textContent = '';
+        }
+        btn.disabled = false;
+
+        // Focus the dropdown button so remote users can immediately interact
+        document.getElementById('outletBtn').focus();
+      }
+
+      function loadForSetup() {
+        fetchPromos().then(populateOutletSelect);
+      }
+
+      // Layar penuh untuk TV toko; wajib dipanggil dari gesture pengguna (klik).
+      function requestFullscreenSafe() {
+        var el = document.documentElement;
+        var already = document.fullscreenElement || document.webkitFullscreenElement;
+        if (already) return;
+        var fn = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+        if (!fn) return;
+        try {
+          var p = fn.call(el);
+          if (p && p.catch) p.catch(function () { });
+        } catch (e) { }
+      }
+
+      function startBoard() {
+        if (!selectedChoice) return;
+        requestFullscreenSafe();
+        state.outlet = {
+          kode: selectedChoice.kode,
+          nama: selectedChoice.kode === 'ALL' ? 'Semua Outlet' : selectedChoice.label
+        };
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state.outlet)); } catch (e) { }
+        enterBoard();
+      }
+
+      function enterBoard() {
+        document.getElementById('setup').classList.remove('active');
+        document.getElementById('board').classList.add('active');
+        document.getElementById('outletLine').textContent = state.outlet.nama;
+        state.lastSlotKey = currentSlotKey();
+        rebuildSlides();
+      }
+
+      function backToSetup() {
+        document.getElementById('board').classList.remove('active');
+        document.getElementById('setup').classList.add('active');
+        if (state.slideTimer) clearInterval(state.slideTimer);
+        try { localStorage.removeItem(STORAGE_KEY); } catch (e) { }
+        state.outlet = null;
+        loadForSetup();
+      }
+
+      /* ---------- Kursor & tombol ganti outlet ---------- */
+      var cursorTimer = null;
+      document.addEventListener('mousemove', function () {
+        document.body.classList.add('show-cursor');
+        if (cursorTimer) clearTimeout(cursorTimer);
+        cursorTimer = setTimeout(function () {
+          document.body.classList.remove('show-cursor');
+        }, 4000);
+      });
+
+      document.getElementById('startBtn').addEventListener('click', startBoard);
+      document.getElementById('gearBtn').addEventListener('click', backToSetup);
+
+      document.getElementById('outletBtn').addEventListener('click', function (e) {
+        e.stopPropagation();
+        setDropdownOpen(document.getElementById('outletPop').hidden);
+      });
+      document.addEventListener('click', function (e) {
+        if (!document.getElementById('outletWrap').contains(e.target)) setDropdownOpen(false);
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+          setDropdownOpen(false);
+          return;
+        }
+
+        var setup = document.getElementById('setup');
+        if (setup && setup.classList.contains('active')) {
+          var pop = document.getElementById('outletPop');
+          var isOpen = !pop.hidden;
+
+          if (isOpen) {
+            var options = Array.from(pop.querySelectorAll('.select-opt'));
+            var idx = options.indexOf(document.activeElement);
+
+            if (e.key === 'ArrowDown') {
+              e.preventDefault();
+              var nextIdx = idx === -1 ? 0 : (idx + 1) % options.length;
+              if (options[nextIdx]) {
+                options[nextIdx].focus();
+                options[nextIdx].scrollIntoView({ block: 'nearest' });
+              }
+            } else if (e.key === 'ArrowUp') {
+              e.preventDefault();
+              var prevIdx = idx === -1 ? options.length - 1 : (idx - 1 + options.length) % options.length;
+              if (options[prevIdx]) {
+                options[prevIdx].focus();
+                options[prevIdx].scrollIntoView({ block: 'nearest' });
+              }
+            }
+          } else {
+            // Dropdown is closed
+            var btn = document.getElementById('outletBtn');
+            if (document.activeElement === btn || document.activeElement === document.body) {
+              if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Enter') {
+                e.preventDefault();
+                setDropdownOpen(true);
+              }
+            }
+          }
+        } else {
+          // Signage/board screen is active
+          var board = document.getElementById('board');
+          if (board && board.classList.contains('active')) {
+            // Allow Backspace / Escape to go back to setup screen on TV remote
+            if (e.key === 'Escape' || e.key === 'Backspace') {
+              e.preventDefault();
+              backToSetup();
+            }
+          }
+        }
+      });
+      window.addEventListener('resize', fitStage);
+      if (window.visualViewport) window.visualViewport.addEventListener('resize', fitStage);
+
+      /* ---------- Boot ---------- */
+      fitStage();
+      tickClock();
+      setInterval(tickClock, 1000);
+      setInterval(scheduleTick, 30000);
+
+      var saved = null;
+      try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch (e) { }
+
+      if (saved && saved.kode) {
+        state.outlet = saved;
+        fetchPromos().then(enterBoard);
+      } else {
+        loadForSetup();
+      }
+    })();
+  </script>
 </body>
+
 </html>
