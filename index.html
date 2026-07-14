@@ -117,65 +117,36 @@
       font-size: clamp(15px, 1.5vw, 22px);
     }
 
-    .select-wrap {
-      position: relative;
+    .outlet-list {
       width: 100%;
-    }
-
-    .select-btn {
-      font-family: "Poppins", sans-serif;
-      font-weight: 600;
-      font-size: clamp(15px, 1.6vw, 22px);
-      padding: 14px 20px;
-      width: 100%;
-      background: #F2F6FF;
-      color: var(--ink);
+      background: #F8FAFC;
       border: 3px solid var(--blue-2);
-      border-radius: 14px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      text-align: left;
-      transition: border-color 0.25s, box-shadow 0.25s;
-    }
-
-    .select-btn:focus {
-      outline: none;
-      border-color: var(--pink-2);
-      box-shadow: 0 0 0 4px rgba(255, 56, 111, 0.25);
-    }
-
-    .select-btn svg {
-      width: 24px;
-      height: 24px;
-      color: var(--blue-2);
-      flex: 0 0 auto;
-      transition: transform .25s ease;
-    }
-
-    .select-wrap.open .select-btn svg {
-      transform: rotate(180deg);
-    }
-
-    .select-pop {
-      position: absolute;
-      top: calc(100% + 10px);
-      left: 0;
-      right: 0;
-      background: var(--white);
-      border-radius: 16px;
-      box-shadow: 0 18px 44px rgba(23, 48, 110, .35), 0 0 0 2px rgba(31, 69, 145, .08);
-      padding: 8px;
-      max-height: 340px;
+      border-radius: 20px;
+      padding: 10px;
+      max-height: 400px;
       overflow-y: auto;
-      z-index: 20;
-      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
     }
-
-    .select-pop[hidden] {
-      display: none;
+    
+    .outlet-list::-webkit-scrollbar {
+      width: 10px;
+    }
+    
+    .outlet-list::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    .outlet-list::-webkit-scrollbar-thumb {
+      background: rgba(54, 124, 233, 0.3);
+      border-radius: 999px;
+      border: 2px solid #F8FAFC;
+    }
+    
+    .outlet-list::-webkit-scrollbar-thumb:hover {
+      background: rgba(54, 124, 233, 0.5);
     }
 
     .select-opt {
@@ -187,28 +158,33 @@
       color: var(--ink);
       background: transparent;
       border: none;
-      border-radius: 10px;
-      padding: 12px 16px;
+      border-radius: 12px;
+      padding: 14px 20px;
       cursor: pointer;
       text-align: left;
-      transition: background 0.15s, color 0.15s;
+      transition: all 0.2s ease;
     }
 
     .select-opt:hover,
     .select-opt:focus {
-      background: #F2F6FF;
-      color: var(--blue-2);
+      background: var(--blue-2);
+      color: var(--white);
       outline: none;
+      transform: translateX(4px);
     }
 
     .select-opt[aria-selected="true"] {
       background: #FFEBF1;
       color: var(--pink-2);
+      border-left: 5px solid var(--pink-2);
+      padding-left: 15px;
     }
 
+    .select-opt[aria-selected="true"]:hover,
     .select-opt[aria-selected="true"]:focus {
-      background: #FFEBF1;
-      box-shadow: inset 0 0 0 2px var(--pink-2);
+      background: var(--pink-2);
+      color: var(--white);
+      border-left-color: var(--yellow);
     }
 
     #startBtn {
@@ -602,18 +578,9 @@
   <section id="setup" class="screen active">
     <div class="logo-title"><span class="t1">PROMO</span> <span class="t2">HARI INI</span></div>
     <div class="setup-card">
-      <label for="outletBtn">Pilih outlet untuk TV ini</label>
-      <div class="select-wrap" id="outletWrap">
-        <button type="button" class="select-btn" id="outletBtn" aria-haspopup="listbox" aria-expanded="false">
-          <span id="outletBtnLabel">Semua Outlet</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-            stroke-linejoin="round" aria-hidden="true">
-            <path d="M6 9l6 6l6 -6" />
-          </svg>
-        </button>
-        <div class="select-pop" id="outletPop" role="listbox" hidden></div>
-      </div>
-      <button id="startBtn" disabled>Tampilkan Signage</button>
+      <label>Pilih outlet untuk TV ini</label>
+      <div class="outlet-list" id="outletList" role="listbox"></div>
+      <button id="startBtn" disabled style="display: none;">Tampilkan Signage</button>
     </div>
     <div id="setupStatus">Memuat daftar outlet&hellip;</div>
   </section>
@@ -1006,8 +973,9 @@
       var selectedChoice = null;
 
       function renderOutletOptions() {
-        var pop = document.getElementById('outletPop');
-        pop.innerHTML = '';
+        var listEl = document.getElementById('outletList');
+        if (!listEl) return;
+        listEl.innerHTML = '';
         outletChoices.forEach(function (c) {
           var opt = document.createElement('button');
           opt.type = 'button';
@@ -1016,39 +984,14 @@
           opt.setAttribute('aria-selected', selectedChoice && selectedChoice.kode === c.kode ? 'true' : 'false');
           opt.textContent = c.label;
           opt.addEventListener('click', function () { chooseOutlet(c); });
-          pop.appendChild(opt);
+          listEl.appendChild(opt);
         });
       }
 
       function chooseOutlet(c) {
         selectedChoice = c;
-        document.getElementById('outletBtnLabel').textContent = c.label;
         renderOutletOptions();
-        setDropdownOpen(false);
         startBoard();
-      }
-
-      function setDropdownOpen(open) {
-        var wrap = document.getElementById('outletWrap');
-        var pop = document.getElementById('outletPop');
-        var btn = document.getElementById('outletBtn');
-        wrap.classList.toggle('open', open);
-        pop.hidden = !open;
-        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-
-        if (open) {
-          var options = Array.from(pop.querySelectorAll('.select-opt'));
-          var selectedIdx = outletChoices.findIndex(function (c) { return c.kode === selectedChoice.kode; });
-          var targetOpt = (selectedIdx !== -1 && options[selectedIdx]) ? options[selectedIdx] : options[0];
-          if (targetOpt) {
-            targetOpt.focus();
-            targetOpt.scrollIntoView({ block: 'nearest' });
-          }
-        } else {
-          if (wrap.contains(document.activeElement)) {
-            btn.focus();
-          }
-        }
       }
 
       function populateOutletSelect() {
@@ -1063,7 +1006,6 @@
         if (!selectedChoice || !outletChoices.some(function (c) { return c.kode === selectedChoice.kode; })) {
           selectedChoice = outletChoices[0];
         }
-        document.getElementById('outletBtnLabel').textContent = selectedChoice.label;
         renderOutletOptions();
 
         if (state.fetchFailed) {
@@ -1074,8 +1016,17 @@
         }
         btn.disabled = false;
 
-        // Focus the dropdown button so remote users can immediately interact
-        document.getElementById('outletBtn').focus();
+        // Focus the currently selected option to enable remote selection starting from it
+        var listEl = document.getElementById('outletList');
+        if (listEl) {
+          var options = Array.from(listEl.querySelectorAll('.select-opt'));
+          var selectedIdx = outletChoices.findIndex(function (c) { return c.kode === selectedChoice.kode; });
+          var targetOpt = (selectedIdx !== -1 && options[selectedIdx]) ? options[selectedIdx] : options[0];
+          if (targetOpt) {
+            targetOpt.focus();
+            targetOpt.scrollIntoView({ block: 'nearest' });
+          }
+        }
       }
 
       function loadForSetup() {
@@ -1136,51 +1087,30 @@
       document.getElementById('startBtn').addEventListener('click', startBoard);
       document.getElementById('gearBtn').addEventListener('click', backToSetup);
 
-      document.getElementById('outletBtn').addEventListener('click', function (e) {
-        e.stopPropagation();
-        setDropdownOpen(document.getElementById('outletPop').hidden);
-      });
-      document.addEventListener('click', function (e) {
-        if (!document.getElementById('outletWrap').contains(e.target)) setDropdownOpen(false);
-      });
       document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') {
-          setDropdownOpen(false);
-          return;
-        }
-
         var setup = document.getElementById('setup');
         if (setup && setup.classList.contains('active')) {
-          var pop = document.getElementById('outletPop');
-          var isOpen = !pop.hidden;
+          var listEl = document.getElementById('outletList');
+          if (!listEl) return;
 
-          if (isOpen) {
-            var options = Array.from(pop.querySelectorAll('.select-opt'));
-            var idx = options.indexOf(document.activeElement);
+          var options = Array.from(listEl.querySelectorAll('.select-opt'));
+          if (options.length === 0) return;
 
-            if (e.key === 'ArrowDown') {
-              e.preventDefault();
-              var nextIdx = idx === -1 ? 0 : (idx + 1) % options.length;
-              if (options[nextIdx]) {
-                options[nextIdx].focus();
-                options[nextIdx].scrollIntoView({ block: 'nearest' });
-              }
-            } else if (e.key === 'ArrowUp') {
-              e.preventDefault();
-              var prevIdx = idx === -1 ? options.length - 1 : (idx - 1 + options.length) % options.length;
-              if (options[prevIdx]) {
-                options[prevIdx].focus();
-                options[prevIdx].scrollIntoView({ block: 'nearest' });
-              }
+          var idx = options.indexOf(document.activeElement);
+
+          if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            var nextIdx = idx === -1 ? 0 : (idx + 1) % options.length;
+            if (options[nextIdx]) {
+              options[nextIdx].focus();
+              options[nextIdx].scrollIntoView({ block: 'nearest' });
             }
-          } else {
-            // Dropdown is closed
-            var btn = document.getElementById('outletBtn');
-            if (document.activeElement === btn || document.activeElement === document.body) {
-              if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Enter') {
-                e.preventDefault();
-                setDropdownOpen(true);
-              }
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            var prevIdx = idx === -1 ? options.length - 1 : (idx - 1 + options.length) % options.length;
+            if (options[prevIdx]) {
+              options[prevIdx].focus();
+              options[prevIdx].scrollIntoView({ block: 'nearest' });
             }
           }
         } else {
