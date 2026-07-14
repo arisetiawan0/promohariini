@@ -1,4 +1,6 @@
-const UPSTREAM = 'https://promo.beautykendari.id/api/tv/promos/today';
+const UPSTREAM = process.env.NODE_ENV === 'development'
+  ? 'https://promo.beautykendari.id/api/tv/promos/discounts/today'
+  : 'https://promo.beautykendari.id/api/tv/promos/discounts/today';
 
 export default async function handler(req, res) {
   const token = process.env.PROMO_API_TOKEN || 'absgroup-kdi';
