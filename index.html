@@ -620,6 +620,8 @@
   </section>
 
   <script type="module">
+    import { applyBouncingText } from './js/bouncing-text.js';
+
     (function () {
       'use strict';
 
@@ -1129,6 +1131,17 @@
       if (window.visualViewport) window.visualViewport.addEventListener('resize', fitStage);
 
       /* ---------- Boot ---------- */
+      // Bounce bergelombang pada "PROMO HARI INI" — stagger menyambung
+      // dari PROMO ke HARI INI supaya terlihat seperti satu gelombang.
+      document.querySelectorAll('.logo-title').forEach(function (title) {
+        var next = 0;
+        title.querySelectorAll('.t1, .t2').forEach(function (part) {
+          next = applyBouncingText(part, {
+            amplitude: 5, duration: 0.6, stagger: 0.1, startIndex: next
+          });
+        });
+      });
+
       fitStage();
       tickClock();
       setInterval(tickClock, 1000);
