@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="only light">
   <title>Promo Hari Ini</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,6 +13,7 @@
     rel="stylesheet">
   <style>
     :root {
+      color-scheme: only light;
       --blue-1: #5d96f4;
       --blue-2: #367ce9;
       --blue-deep: #304a91;
@@ -693,17 +695,13 @@
         }).format(date).toUpperCase();
       }
 
-      // Tanggal akhir yang jatuh tepat pukul 00:00 WITA dianggap batas eksklusif
-      // (mis. selesai 19 Juli 00:00 WITA berarti berlaku s/d 18 Juli).
       function fmtPeriod(startIso, endIso) {
         if (!startIso || !endIso) return '';
         var start = new Date(startIso);
         var end = new Date(endIso);
-        var ep = witaParts(end);
-        if (ep.hour === '00' && ep.minute === '00') {
-          end = new Date(end.getTime() - 60000);
-        }
-        return fmtDateShort(start) + ' – ' + fmtDateShort(end);
+        var startLabel = fmtDateShort(start);
+        var endLabel = fmtDateShort(end);
+        return startLabel === endLabel ? startLabel : startLabel + ' – ' + endLabel;
       }
 
       /* ---------- Data ---------- */
