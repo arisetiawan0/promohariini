@@ -105,32 +105,32 @@
       background: var(--white);
       color: var(--ink);
       border-radius: 26px;
-      padding: 4vh 4vw;
+      padding: 42px 48px 48px;
       display: flex;
       flex-direction: column;
-      gap: 2.4vh;
+      gap: 28px;
       align-items: center;
       box-shadow: 0 10px 0 rgba(29, 79, 184, .35);
-      min-width: min(560px, 88vw);
+      width: min(1520px, calc(100% - 160px));
     }
 
     .setup-card label {
-      font-weight: 700;
-      font-size: clamp(15px, 1.5vw, 22px);
+      font-family: "Baloo 2", "Poppins", sans-serif;
+      font-weight: 800;
+      font-size: 32px;
+      line-height: 1;
+      color: var(--blue-deep);
     }
 
     .outlet-list {
       width: 100%;
-      background: #F8FAFC;
-      border: 3px solid var(--blue-2);
-      border-radius: 20px;
-      padding: 10px;
-      max-height: 400px;
+      max-height: 380px;
       overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 18px;
+      padding: 8px;
+      scroll-padding: 12px;
     }
     
     .outlet-list::-webkit-scrollbar {
@@ -138,13 +138,14 @@
     }
     
     .outlet-list::-webkit-scrollbar-track {
-      background: transparent;
+      background: #EAF1FF;
+      border-radius: 999px;
     }
     
     .outlet-list::-webkit-scrollbar-thumb {
       background: rgba(54, 124, 233, 0.3);
       border-radius: 999px;
-      border: 2px solid #F8FAFC;
+      border: 2px solid var(--white);
     }
     
     .outlet-list::-webkit-scrollbar-thumb:hover {
@@ -152,41 +153,67 @@
     }
 
     .select-opt {
-      display: block;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
       width: 100%;
+      min-height: 82px;
       font-family: "Poppins", sans-serif;
-      font-weight: 600;
-      font-size: clamp(14px, 1.4vw, 20px);
-      color: var(--ink);
-      background: transparent;
-      border: none;
-      border-radius: 12px;
-      padding: 14px 20px;
+      font-weight: 700;
+      font-size: 21px;
+      line-height: 1.15;
+      color: var(--white);
+      background: var(--blue-2);
+      border: 3px solid transparent;
+      border-radius: 14px;
+      padding: 12px 16px;
       cursor: pointer;
-      text-align: left;
-      transition: all 0.2s ease;
+      text-align: center;
+      transition: transform .16s ease, box-shadow .16s ease, background-color .16s ease;
     }
 
-    .select-opt:hover,
+    .select-opt:nth-child(3n + 2) {
+      background: var(--pink-2);
+    }
+
+    .select-opt:nth-child(3n) {
+      background: var(--yellow);
+      color: var(--blue-deep);
+    }
+
+    .select-opt:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 0 rgba(29, 79, 184, .22);
+    }
+
     .select-opt:focus {
-      background: var(--blue-2);
+      background: var(--blue-deep);
       color: var(--white);
-      outline: none;
-      transform: translateX(4px);
+      outline: 6px solid var(--yellow);
+      outline-offset: 3px;
+      box-shadow: 0 8px 0 rgba(29, 79, 184, .32);
+      transform: translateY(-2px) scale(1.02);
+      position: relative;
+      z-index: 1;
     }
 
     .select-opt[aria-selected="true"] {
-      background: #FFEBF1;
-      color: var(--pink-2);
-      border-left: 5px solid var(--pink-2);
-      padding-left: 15px;
+      border-color: var(--blue-deep);
     }
 
-    .select-opt[aria-selected="true"]:hover,
     .select-opt[aria-selected="true"]:focus {
-      background: var(--pink-2);
+      background: var(--blue-deep);
       color: var(--white);
-      border-left-color: var(--yellow);
+      border-color: var(--white);
+    }
+
+    .outlet-code {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      opacity: .84;
     }
 
     #startBtn {
@@ -580,8 +607,8 @@
   <section id="setup" class="screen active">
     <div class="logo-title"><span class="t1">PROMO</span> <span class="t2">HARI INI</span></div>
     <div class="setup-card">
-      <label>Pilih outlet untuk TV ini</label>
-      <div class="outlet-list" id="outletList" role="listbox"></div>
+      <label id="setupLabel">Pilih outlet untuk TV ini</label>
+      <div class="outlet-list" id="outletList" role="listbox" aria-labelledby="setupLabel"></div>
       <button id="startBtn" disabled style="display: none;">Tampilkan Signage</button>
     </div>
     <div id="setupStatus">Memuat daftar outlet&hellip;</div>
@@ -968,7 +995,7 @@
         document.getElementById('dateLine').textContent = fmtDateLong();
       }
 
-      /* ---------- Layar setup: dropdown custom ---------- */
+      /* ---------- Layar setup: grid outlet ---------- */
       var outletChoices = [];   // {kode, nama, label}
       var selectedChoice = null;
 
@@ -982,7 +1009,20 @@
           opt.className = 'select-opt';
           opt.setAttribute('role', 'option');
           opt.setAttribute('aria-selected', selectedChoice && selectedChoice.kode === c.kode ? 'true' : 'false');
-          opt.textContent = c.label;
+          opt.setAttribute('aria-label', c.label);
+
+          var name = document.createElement('span');
+          name.className = 'outlet-name';
+          name.textContent = c.nama;
+          opt.appendChild(name);
+
+          if (c.kode !== 'ALL') {
+            var code = document.createElement('span');
+            code.className = 'outlet-code';
+            code.textContent = c.kode;
+            opt.appendChild(code);
+          }
+
           opt.addEventListener('click', function () { chooseOutlet(c); });
           listEl.appendChild(opt);
         });
@@ -1000,6 +1040,9 @@
 
         outletChoices = [{ kode: 'ALL', nama: 'Semua Outlet', label: 'Semua Outlet' }];
         allOutletsFromData().forEach(function (o) {
+          var kode = String(o.kode || '').toUpperCase();
+          var nama = String(o.nama || '').toLowerCase();
+          if (kode === 'ALL' || kode === 'SEMUA' || nama === 'semua outlet') return;
           outletChoices.push({ kode: o.kode, nama: o.nama, label: o.nama + ' (' + o.kode + ')' });
         });
 
@@ -1087,6 +1130,47 @@
       document.getElementById('startBtn').addEventListener('click', startBoard);
       document.getElementById('gearBtn').addEventListener('click', backToSetup);
 
+      function focusOutletInDirection(options, direction) {
+        var currentIndex = options.indexOf(document.activeElement);
+        if (currentIndex === -1) {
+          options[0].focus();
+          return;
+        }
+
+        var currentRect = options[currentIndex].getBoundingClientRect();
+        var currentX = currentRect.left + currentRect.width / 2;
+        var currentY = currentRect.top + currentRect.height / 2;
+        var bestOption = null;
+        var bestScore = Infinity;
+
+        options.forEach(function (option, index) {
+          if (index === currentIndex) return;
+          var rect = option.getBoundingClientRect();
+          var dx = rect.left + rect.width / 2 - currentX;
+          var dy = rect.top + rect.height / 2 - currentY;
+          var isCandidate =
+            (direction === 'left' && dx < -1) ||
+            (direction === 'right' && dx > 1) ||
+            (direction === 'up' && dy < -1) ||
+            (direction === 'down' && dy > 1);
+          if (!isCandidate) return;
+
+          var vertical = direction === 'up' || direction === 'down';
+          var primaryDistance = Math.abs(vertical ? dy : dx);
+          var secondaryDistance = Math.abs(vertical ? dx : dy);
+          var score = primaryDistance + secondaryDistance * 2;
+          if (score < bestScore) {
+            bestScore = score;
+            bestOption = option;
+          }
+        });
+
+        if (bestOption) {
+          bestOption.focus();
+          bestOption.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+        }
+      }
+
       document.addEventListener('keydown', function (e) {
         var setup = document.getElementById('setup');
         if (setup && setup.classList.contains('active')) {
@@ -1097,21 +1181,17 @@
           if (options.length === 0) return;
 
           var idx = options.indexOf(document.activeElement);
+          var key = e.key || ({
+            13: 'Enter', 23: 'Enter',
+            37: 'ArrowLeft', 38: 'ArrowUp', 39: 'ArrowRight', 40: 'ArrowDown'
+          })[e.keyCode];
 
-          if (e.key === 'ArrowDown') {
+          if (key === 'ArrowLeft' || key === 'ArrowRight' || key === 'ArrowUp' || key === 'ArrowDown') {
             e.preventDefault();
-            var nextIdx = idx === -1 ? 0 : (idx + 1) % options.length;
-            if (options[nextIdx]) {
-              options[nextIdx].focus();
-              options[nextIdx].scrollIntoView({ block: 'nearest' });
-            }
-          } else if (e.key === 'ArrowUp') {
+            focusOutletInDirection(options, key.replace('Arrow', '').toLowerCase());
+          } else if (key === 'Enter') {
             e.preventDefault();
-            var prevIdx = idx === -1 ? options.length - 1 : (idx - 1 + options.length) % options.length;
-            if (options[prevIdx]) {
-              options[prevIdx].focus();
-              options[prevIdx].scrollIntoView({ block: 'nearest' });
-            }
+            (options[idx] || options[0]).click();
           }
         } else {
           // Signage/board screen is active
