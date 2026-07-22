@@ -32,8 +32,9 @@ masalah CORS.
 
 ## Cara pakai di TV
 
-1. Saat pertama dibuka, muncul layar **pilih outlet** (daftar outlet
-   diambil otomatis dari data API, plus opsi "Semua Outlet").
+1. Saat pertama dibuka, muncul layar **pilih outlet** (seluruh master outlet
+   B1-B27 dan Online selalu tersedia, plus opsi "Semua Outlet"). Outlet yang
+   ditemukan dari data API juga otomatis digabungkan ke daftar.
 2. Pilih outlet → **Tampilkan Signage**. Pilihan tersimpan di perangkat,
    jadi setelah TV restart langsung masuk ke signage tanpa ditanya lagi.
 3. Untuk mengganti outlet: gerakkan kursor/mouse, lalu klik tombol

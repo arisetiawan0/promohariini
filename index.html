@@ -662,6 +662,10 @@
       var STORAGE_KEY = 'phi_outlet_v1';
       var STAGE_W = 1920;
       var STAGE_H = 1080;
+      var MASTER_OUTLETS = Array.from({ length: 27 }, function (_, index) {
+        var number = index + 1;
+        return { kode: 'B' + number, nama: 'Beauty ' + number };
+      }).concat([{ kode: 'ONLINE', nama: 'Online Store' }]);
 
       var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -751,7 +755,12 @@
 
       function allOutletsFromData() {
         var map = {};
+        var outlets = MASTER_OUTLETS.concat((state.raw && state.raw.outlets) || []);
         var promos = (state.raw && state.raw.promos) || [];
+
+        outlets.forEach(function (o) {
+          if (o && o.kode) map[o.kode] = o.nama || o.kode;
+        });
         promos.forEach(function (p) {
           (p.outlets || []).forEach(function (o) {
             if (o && o.kode) map[o.kode] = o.nama || o.kode;
