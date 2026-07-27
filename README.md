@@ -52,6 +52,10 @@ masalah CORS.
   diekstrak dari teks `mekanisme` dan ditampilkan besar (mis. **30%**).
   Untuk voucher/gimmick (atau jika persen tidak ditemukan), teks
   `mekanisme` ditampilkan apa adanya.
+- **Flash sale**: promo dengan `is_flash_sale = true` memakai kartu khusus
+  beraksen kuning-merah dan countdown WITA. Flash sale aktif atau yang akan
+  segera dimulai ditempatkan lebih dahulu; setelah waktunya berakhir kartu
+  otomatis dikeluarkan dari rotasi.
 - **Filter outlet**: promo tampil jika daftar `outlets`-nya memuat kode
   outlet yang dipilih, kosong (dianggap berlaku semua), atau memuat
   entri "Semua". Pilihan "Semua Outlet" menampilkan seluruh promo.

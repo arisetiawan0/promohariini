@@ -357,6 +357,7 @@
     }
 
     .card {
+      position: relative;
       background: var(--white);
       border: 0;
       border-radius: 86px;
@@ -372,6 +373,57 @@
       overflow: hidden;
       will-change: transform, opacity;
       box-shadow: 0 12px 26px rgba(160, 15, 60, .28);
+    }
+
+    .card.flash-sale {
+      background: var(--white);
+      border: 0;
+      padding: 28px 38px 20px;
+      box-shadow: 0 12px 26px rgba(160, 15, 60, .28);
+    }
+
+    .flash-ribbon {
+      position: relative;
+      flex: 0 0 auto;
+      max-width: 96%;
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      margin-top: 8px;
+      padding: 6px 16px 7px;
+      background: var(--red);
+      color: var(--white);
+      border-radius: 12px;
+      font-family: "Poppins", sans-serif;
+      font-size: 19px;
+      font-weight: 800;
+      font-style: italic;
+      line-height: 1;
+      letter-spacing: .01em;
+      white-space: nowrap;
+      box-shadow: 0 4px 0 rgba(150, 30, 60, .3);
+    }
+
+    .flash-ribbon svg {
+      width: 21px;
+      height: 21px;
+      fill: var(--yellow);
+      flex: 0 0 auto;
+    }
+
+    .flash-sale.is-active .flash-ribbon svg {
+      animation: flash-bolt 1.15s ease-in-out infinite;
+    }
+
+    @keyframes flash-bolt {
+      0%, 100% { transform: scale(1) rotate(0); }
+      45% { transform: scale(1.24) rotate(-8deg); }
+    }
+
+    .flash-sale.is-ended {
+      filter: saturate(.74);
     }
 
     .brand-name {
@@ -391,6 +443,19 @@
       object-fit: contain;
     }
 
+    .flash-sale .brand-logo {
+      height: 118px;
+      max-width: 86%;
+    }
+
+    .flash-sale .brand-name {
+      min-height: 118px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 52px;
+    }
+
     .discount-label {
       color: var(--blue-deep);
       font-weight: 700;
@@ -399,6 +464,12 @@
       line-height: 1;
       margin-top: 24px;
       text-transform: uppercase;
+    }
+
+    .flash-sale .discount-label {
+      color: var(--blue-deep);
+      font-size: 28px;
+      margin-top: 12px;
     }
 
     .value {
@@ -442,6 +513,24 @@
       margin-bottom: 8px;
     }
 
+    .flash-sale .value.percent {
+      min-height: 214px;
+      margin-top: 12px;
+      margin-bottom: 14px;
+      color: #000;
+    }
+
+    .flash-sale .percent-number {
+      font-size: 240px;
+    }
+
+    .flash-sale .percent-dot {
+      width: 108px;
+      font-size: 62px;
+      margin-left: -31px;
+      background: var(--hot-pink);
+    }
+
     .value.text {
       display: flex;
       align-items: center;
@@ -452,6 +541,13 @@
       color: #000;
       letter-spacing: 0;
       overflow-wrap: anywhere;
+    }
+
+    .flash-sale .value.text {
+      min-height: 214px;
+      margin: 12px 0 14px;
+      color: #000;
+      font-size: 40px;
     }
 
     .scope-pill {
@@ -466,6 +562,87 @@
       width: min(100%, 340px);
       white-space: nowrap;
       box-shadow: 0 5px 0 rgba(150, 30, 60, .3);
+    }
+
+    .flash-sale .scope-pill {
+      background: linear-gradient(180deg, var(--pink-1), var(--pink-2));
+      font-size: 28px;
+      padding: .5em 1.5em .55em;
+      box-shadow: 0 5px 0 rgba(150, 30, 60, .3);
+    }
+
+    .flash-countdown {
+      width: min(100%, 390px);
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      margin-top: 8px;
+      padding: 5px 14px 6px;
+      border-radius: 11px;
+      background: var(--red);
+      color: var(--white);
+      box-shadow: 0 4px 0 rgba(150, 30, 60, .3);
+    }
+
+    .flash-countdown-icon {
+      width: 30px;
+      height: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: var(--white);
+      color: var(--blue-deep);
+    }
+
+    .flash-countdown-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .flash-countdown-copy {
+      display: inline-flex;
+      align-items: baseline;
+      justify-content: center;
+      min-width: 0;
+      white-space: nowrap;
+    }
+
+    .flash-countdown-label {
+      font-size: 19px;
+      font-weight: 800;
+      font-style: italic;
+      line-height: 1;
+      letter-spacing: .01em;
+    }
+
+    .flash-countdown-separator {
+      font-size: 19px;
+      font-weight: 800;
+      font-style: italic;
+    }
+
+    .flash-clock {
+      color: var(--white);
+      font-size: 23px;
+      font-weight: 800;
+      font-style: italic;
+      line-height: 1;
+      letter-spacing: .025em;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .flash-sale.is-ended .flash-countdown {
+      background: #F0F3FA;
+    }
+
+    .flash-sale.is-ended .flash-clock {
+      color: var(--blue-deep);
+      font-size: 24px;
     }
 
     .period {
@@ -487,6 +664,15 @@
       width: 22px;
       height: 22px;
       flex: 0 0 auto;
+    }
+
+    .flash-sale .period {
+      max-width: 100%;
+      margin-top: 10px;
+      padding: .48em .9em;
+      background: #FFEBF1;
+      color: var(--pink-2);
+      font-size: 17px;
     }
 
     /* ---------- Progress slide berikutnya ---------- */
@@ -604,6 +790,10 @@
       .seg.run .fill {
         animation: none;
         transform: scaleX(1);
+      }
+
+      .flash-sale.is-active .flash-ribbon svg {
+        animation: none;
       }
     }
   </style>
@@ -744,6 +934,118 @@
         return startLabel === endLabel ? startLabel : startLabel + ' – ' + endLabel;
       }
 
+      function timeOnlyParts(value) {
+        return /^(\d{1,2}):(\d{2})(?::(\d{2}))?$/.exec(String(value || '').trim());
+      }
+
+      function fmtTime(value) {
+        if (!value) return '';
+        var timeParts = timeOnlyParts(value);
+        if (timeParts) {
+          return String(parseInt(timeParts[1], 10)).padStart(2, '0') + ':' + timeParts[2];
+        }
+        var date = new Date(value);
+        if (isNaN(date.getTime())) return '';
+        return new Intl.DateTimeFormat('id-ID', {
+          timeZone: TZ, hour: '2-digit', minute: '2-digit', hour12: false
+        }).format(date).replace('.', ':');
+      }
+
+      function flashTimestamp(value, dateIso, now) {
+        if (!value) return NaN;
+        var timeParts = timeOnlyParts(value);
+        if (!timeParts) return Date.parse(value);
+
+        var baseDate = new Date(dateIso || now || Date.now());
+        if (isNaN(baseDate.getTime())) baseDate = new Date(now || Date.now());
+        var dateParts = witaParts(baseDate);
+        var isoWita = dateParts.year + '-' + dateParts.month + '-' + dateParts.day + 'T' +
+          String(parseInt(timeParts[1], 10)).padStart(2, '0') + ':' + timeParts[2] + ':' +
+          (timeParts[3] || '00') + '+08:00';
+        return Date.parse(isoWita);
+      }
+
+      function flashBounds(promo, now) {
+        var start = flashTimestamp(promo.flash_sale_start_time, promo.periode_mulai, now);
+        var end = flashTimestamp(promo.flash_sale_end_time, promo.periode_mulai, now);
+        if (timeOnlyParts(promo.flash_sale_start_time) && timeOnlyParts(promo.flash_sale_end_time) &&
+          !isNaN(start) && !isNaN(end) && end <= start) {
+          end += 24 * 60 * 60 * 1000;
+        }
+        return { start: start, end: end };
+      }
+
+      function isFlashSale(promo) {
+        return promo && (promo.is_flash_sale === true || promo.is_flash_sale === 1 || promo.is_flash_sale === 'true');
+      }
+
+      function flashPhase(promo, now) {
+        if (!isFlashSale(promo)) return 'regular';
+        var current = now == null ? Date.now() : now;
+        var bounds = flashBounds(promo, current);
+        var start = bounds.start;
+        var end = bounds.end;
+        var apiActive = promo.is_flash_sale_active === true ||
+          promo.is_flash_sale_active === 1 || promo.is_flash_sale_active === 'true';
+        if (!isNaN(start) && current < start) return 'upcoming';
+        if (!isNaN(end) && current >= end) return 'ended';
+        if ((!isNaN(start) && !isNaN(end)) || apiActive) return 'active';
+        return 'active';
+      }
+
+      function formatCountdown(milliseconds) {
+        var seconds = Math.max(0, Math.ceil(milliseconds / 1000));
+        var hours = Math.floor(seconds / 3600);
+        var minutes = Math.floor((seconds % 3600) / 60);
+        var secs = seconds % 60;
+        return [hours, minutes, secs].map(function (part) {
+          return String(part).padStart(2, '0');
+        }).join(':');
+      }
+
+      function updateFlashCountdown(el, now) {
+        var card = el.closest('.flash-sale');
+        var label = el.querySelector('.flash-countdown-label');
+        var clock = el.querySelector('.flash-clock');
+        var promoData = {
+          is_flash_sale: true,
+          is_flash_sale_active: el.dataset.active === 'true',
+          periode_mulai: el.dataset.date,
+          flash_sale_start_time: el.dataset.start,
+          flash_sale_end_time: el.dataset.end
+        };
+        var phase = flashPhase(promoData, now);
+        var previousPhase = el.dataset.phase || '';
+        var bounds = flashBounds(promoData, now);
+        var start = bounds.start;
+        var end = bounds.end;
+        el.dataset.phase = phase;
+
+        card.classList.remove('is-active', 'is-upcoming', 'is-ended');
+        card.classList.add('is-' + phase);
+
+        if (phase === 'upcoming') {
+          label.textContent = 'DIMULAI DALAM';
+          clock.textContent = isNaN(start) ? 'SEGERA' : formatCountdown(start - now);
+        } else if (phase === 'ended') {
+          label.textContent = 'FLASH SALE';
+          clock.textContent = 'SELESAI';
+        } else {
+          label.textContent = 'BERAKHIR DALAM';
+          clock.textContent = isNaN(end) ? 'BERLANGSUNG' : formatCountdown(end - now);
+        }
+        return previousPhase !== '' && previousPhase !== 'ended' && phase === 'ended';
+      }
+
+      function updateFlashCountdowns() {
+        var now = Date.now();
+        var flashSaleEnded = false;
+        document.querySelectorAll('.flash-countdown').forEach(function (el) {
+          if (updateFlashCountdown(el, now)) flashSaleEnded = true;
+        });
+        if (flashSaleEnded && state.outlet) rebuildSlides();
+      }
+
       /* ---------- Data ---------- */
       function fetchPromos() {
         return fetch(API_URL, { cache: 'no-store' })
@@ -821,6 +1123,21 @@
       function buildCard(promo) {
         var card = document.createElement('div');
         card.className = 'card';
+        var isFlash = isFlashSale(promo);
+        var ribbon = null;
+        if (isFlash) {
+          card.classList.add('flash-sale', 'is-' + flashPhase(promo));
+          ribbon = document.createElement('div');
+          ribbon.className = 'flash-ribbon';
+          ribbon.innerHTML =
+            '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2L4.5 13H11l-1 9L19.5 10H13l0-8z" /></svg>' +
+            '<span></span>';
+          var startLabel = fmtTime(promo.flash_sale_start_time);
+          var endLabel = fmtTime(promo.flash_sale_end_time);
+          ribbon.querySelector('span').textContent = startLabel && endLabel
+            ? 'FLASH SALE - ' + startLabel + ' - ' + endLabel
+            : 'FLASH SALE';
+        }
 
         var brand;
         if (promo.brand_logo_url) {
@@ -861,6 +1178,29 @@
         scope.className = 'scope-pill';
         scope.textContent = scopeLabel(promo.product_scope);
 
+        var countdown = null;
+        if (isFlash) {
+          countdown = document.createElement('div');
+          countdown.className = 'flash-countdown';
+          countdown.dataset.start = promo.flash_sale_start_time || '';
+          countdown.dataset.end = promo.flash_sale_end_time || '';
+          countdown.dataset.date = promo.periode_mulai || '';
+          countdown.dataset.active = String(
+            promo.is_flash_sale_active === true || promo.is_flash_sale_active === 1 ||
+            promo.is_flash_sale_active === 'true'
+          );
+          countdown.innerHTML =
+            '<span class="flash-countdown-icon" aria-hidden="true">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" ' +
+            'stroke-linecap="round" stroke-linejoin="round">' +
+            '<circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" />' +
+            '</svg></span>' +
+            '<span class="flash-countdown-copy">' +
+            '<span class="flash-countdown-label"></span>' +
+            '<span class="flash-countdown-separator"> - </span>' +
+            '<span class="flash-clock"></span></span>';
+        }
+
         var period = document.createElement('div');
         period.className = 'period';
         period.innerHTML =
@@ -869,15 +1209,18 @@
           '<path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" />' +
           '<path d="M16 3v4" /><path d="M8 3v4" /><path d="M4 11h16" />' +
           '</svg>';
-        period.appendChild(
-          document.createTextNode(fmtPeriod(promo.periode_mulai, promo.periode_selesai))
-        );
+        period.appendChild(document.createTextNode(fmtPeriod(promo.periode_mulai, promo.periode_selesai)));
 
         card.appendChild(brand);
+        if (ribbon) card.appendChild(ribbon);
         card.appendChild(label);
         card.appendChild(value);
         card.appendChild(scope);
         card.appendChild(period);
+        if (countdown) {
+          card.appendChild(countdown);
+          updateFlashCountdown(countdown, Date.now());
+        }
         return card;
       }
 
@@ -928,7 +1271,15 @@
         host.querySelectorAll('.slide').forEach(function (el) { el.remove(); });
 
         var promos = ((state.raw && state.raw.promos) || [])
-          .filter(function (p) { return promoAppliesTo(p, state.outlet.kode); });
+          .filter(function (p) { return promoAppliesTo(p, state.outlet.kode); })
+          .filter(function (p) { return !isFlashSale(p) || flashPhase(p) !== 'ended'; })
+          .map(function (promo, index) { return { promo: promo, index: index }; })
+          .sort(function (a, b) {
+            var priority = { active: 0, upcoming: 1, regular: 2, ended: 3 };
+            var phaseDiff = priority[flashPhase(a.promo)] - priority[flashPhase(b.promo)];
+            return phaseDiff || a.index - b.index;
+          })
+          .map(function (item) { return item.promo; });
 
         state.slides = [];
         for (var i = 0; i < promos.length; i += PROMOS_PER_SLIDE) {
@@ -1011,6 +1362,7 @@
         var p = witaParts();
         document.getElementById('clockLine').textContent = p.hour + ':' + p.minute;
         document.getElementById('dateLine').textContent = fmtDateLong();
+        updateFlashCountdowns();
       }
 
       /* ---------- Layar setup: grid outlet ---------- */
